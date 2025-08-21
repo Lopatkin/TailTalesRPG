@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB подключение
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tailtales_rpg', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
