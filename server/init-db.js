@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Location = require('./models/Location');
 const Item = require('./models/Item');
 require('dotenv').config();
+console.log("MONGODB_URI:", process.env.MONGODB_URI);
 
 // Подключение к MongoDB
 const mongoUri = process.env.MONGODB_URI;
