@@ -1,0 +1,342 @@
+.profile-view {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.profile-header {
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  color: white;
+  padding: 24px;
+  text-align: center;
+}
+
+.profile-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.profile-tabs {
+  background: #f8f9fa;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.profile-content,
+.inventory-content {
+  padding: 24px;
+}
+
+.player-card {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.player-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #4a90e2;
+  flex-shrink: 0;
+}
+
+.player-avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder-large {
+  width: 100%;
+  height: 100%;
+  background: #4a90e2;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.player-info-detailed {
+  flex: 1;
+}
+
+.player-info-detailed h3 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.player-username {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.player-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.stat-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #333;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.player-attributes h4 {
+  color: #333;
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.attributes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.attribute {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.attribute-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.attribute-name {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.attribute-value {
+  color: #333;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.inventory-content h3 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.empty-inventory {
+  text-align: center;
+  color: #666;
+  padding: 60px 20px;
+}
+
+.empty-inventory p {
+  margin-bottom: 8px;
+  font-style: italic;
+  font-size: 16px;
+}
+
+.inventory-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.inventory-item {
+  display: flex;
+  align-items: flex-start;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+  gap: 16px;
+}
+
+.item-icon {
+  font-size: 48px;
+  flex-shrink: 0;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.item-description {
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.item-details {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.item-type,
+.item-rarity,
+.item-value {
+  background: #e9ecef;
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.item-rarity {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.item-value {
+  background: #d4edda;
+  color: #155724;
+}
+
+.item-quantity {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.item-actions {
+  flex-shrink: 0;
+}
+
+.use-item-button {
+  background: #28a745;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.use-item-button:hover:not(:disabled) {
+  background: #218838;
+}
+
+.use-item-button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .profile-header {
+    padding: 20px 16px;
+  }
+  
+  .profile-header h2 {
+    font-size: 24px;
+  }
+  
+  .profile-tabs {
+    padding: 12px 16px;
+  }
+  
+  .profile-content,
+  .inventory-content {
+    padding: 16px;
+  }
+  
+  .player-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .player-avatar-large {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .player-info-detailed h3 {
+    font-size: 24px;
+  }
+  
+  .player-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .attributes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .inventory-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .item-icon {
+    font-size: 36px;
+  }
+  
+  .item-details {
+    justify-content: center;
+  }
+  
+  .item-actions {
+    width: 100%;
+  }
+  
+  .use-item-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .attributes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .inventory-item {
+    padding: 16px;
+  }
+}
+

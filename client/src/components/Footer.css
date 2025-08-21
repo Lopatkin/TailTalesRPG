@@ -1,0 +1,93 @@
+.footer {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 16px 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+}
+
+.footer-nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.nav-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  color: #666;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+.nav-button:hover {
+  background: #f8f9fa;
+  color: #4a90e2;
+  transform: translateY(-2px);
+}
+
+.nav-button.active {
+  background: #4a90e2;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.nav-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.nav-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .footer-nav {
+    padding: 0 16px;
+  }
+  
+  .nav-button {
+    min-width: 70px;
+    padding: 6px 8px;
+  }
+  
+  .nav-icon {
+    font-size: 20px;
+  }
+  
+  .nav-label {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-nav {
+    gap: 8px;
+  }
+  
+  .nav-button {
+    min-width: 60px;
+    padding: 4px 6px;
+  }
+  
+  .nav-icon {
+    font-size: 18px;
+  }
+  
+  .nav-label {
+    font-size: 10px;
+  }
+}
+
