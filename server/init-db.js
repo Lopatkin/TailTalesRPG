@@ -4,7 +4,12 @@ const Item = require('./models/Item');
 require('dotenv').config();
 
 // Подключение к MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tailtales_rpg', {
+const mongoUri = process.env.MONGODB_URI;
+if (!mongoUri) {
+  console.error('❌ Переменная окружения MONGODB_URI не задана. Укажите строку подключения в .env');
+  process.exit(1);
+}
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -231,4 +236,5 @@ db.on('error', (error) => {
   console.error('❌ Ошибка подключения к MongoDB:', error);
   process.exit(1);
 });
+
 

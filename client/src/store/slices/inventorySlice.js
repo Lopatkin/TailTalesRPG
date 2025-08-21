@@ -83,3 +83,4 @@ const inventorySlice = createSlice({
 export const { addItem, removeItem, clearInventory } = inventorySlice.actions;
 export default inventorySlice.reducer;
 
+
