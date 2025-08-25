@@ -17,6 +17,31 @@ const AppContent = () => {
 
   useEffect(() => {
     const isTelegramWebApp = typeof window !== 'undefined' && window.Telegram && window.Telegram.WebApp;
+
+    if (!player && isTelegramWebApp) {
+      try {
+        const wa = window.Telegram.WebApp;
+        // Сообщаем Telegram, что WebApp готов
+        if (wa && typeof wa.ready === 'function') {
+          wa.ready();
+        }
+
+        const tgUser = wa?.initDataUnsafe?.user;
+        if (tgUser && tgUser.id) {
+          dispatch(authenticatePlayer({
+            telegramId: String(tgUser.id),
+            username: tgUser.username || `tg_${tgUser.id}`,
+            firstName: tgUser.first_name || 'Player',
+            lastName: tgUser.last_name || '',
+            avatar: tgUser.photo_url || ''
+          }));
+          return; // не делаем тестовый логин
+        }
+      } catch (e) {
+        // игнорируем и упадём на тестовый вход
+      }
+    }
+
     if (!player && !isTelegramWebApp) {
       dispatch(authenticatePlayer({
         telegramId: 'TEST_USER_001',
