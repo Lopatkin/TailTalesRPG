@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { performAction } from '../store/slices/playerSlice';
+import { performAction, authenticatePlayer } from '../store/slices/playerSlice';
 import { fetchLocationById } from '../store/slices/locationSlice';
 import { addItem } from '../store/slices/inventorySlice';
 import './LocationView.css';
@@ -63,6 +63,20 @@ const LocationView = () => {
           <button className="telegram-auth-btn">
             Войти через Telegram
           </button>
+          <div style={{ marginTop: '12px' }}>
+            <button
+              className="telegram-auth-btn"
+              onClick={() => dispatch(authenticatePlayer({
+                telegramId: 'TEST_USER_001',
+                username: 'test_user',
+                firstName: 'Test',
+                lastName: 'User',
+                avatar: ''
+              }))}
+            >
+              Войти как тестовый игрок
+            </button>
+          </div>
         </div>
       </div>
     );
