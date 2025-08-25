@@ -43,6 +43,22 @@ app.use('/api/players', require('./routes/players'));
 app.use('/api/locations', require('./routes/locations'));
 app.use('/api/items', require('./routes/items'));
 
+// Одноразовая инициализация БД через HTTP (защита по токену)
+app.post('/admin/init-db', async (req, res) => {
+  try {
+    const token = req.header('x-init-db-token') || (req.query && req.query.token);
+    if (!process.env.INIT_DB_TOKEN || token !== process.env.INIT_DB_TOKEN) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const { runInitDatabase } = require('./utils/initDb');
+    const result = await runInitDatabase();
+    return res.json({ ok: true, ...result });
+  } catch (error) {
+    console.error('Init DB via HTTP error:', error);
+    return res.status(500).json({ ok: false, message: 'Init failed', error: String(error) });
+  }
+});
+
 // Socket.io обработка
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
