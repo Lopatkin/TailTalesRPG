@@ -237,5 +237,3 @@ db.on('error', (error) => {
   console.error('❌ Ошибка подключения к MongoDB:', error);
   process.exit(1);
 });
-
-
