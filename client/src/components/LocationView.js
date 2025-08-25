@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchLocationById, performAction } from '../store/slices/playerSlice';
+import { performAction } from '../store/slices/playerSlice';
+import { fetchLocationById } from '../store/slices/locationSlice';
 import { addItem } from '../store/slices/inventorySlice';
 import './LocationView.css';
 
