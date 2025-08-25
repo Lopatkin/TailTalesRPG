@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchInventory, useItem } from '../store/slices/inventorySlice';
+import { fetchInventory, useItem as inventoryUseItemThunk } from '../store/slices/inventorySlice';
 import './ProfileView.css';
 
 const ProfileView = () => {
@@ -20,7 +20,7 @@ const ProfileView = () => {
     if (!player) return;
 
     try {
-      const result = await dispatch(useItem({
+      const result = await dispatch(inventoryUseItemThunk({
         playerId: player._id,
         itemId
       })).unwrap();
