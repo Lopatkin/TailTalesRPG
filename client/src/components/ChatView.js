@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
 import { addMessage, setCurrentLocation } from '../store/slices/chatSlice';
+import { authenticatePlayer } from '../store/slices/playerSlice';
 import './ChatView.css';
 
 const ChatView = () => {
@@ -12,6 +13,16 @@ const ChatView = () => {
   const [message, setMessage] = useState('');
   const [socket, setSocket] = useState(null);
   const messagesEndRef = useRef(null);
+
+  const handleTestLogin = () => {
+    dispatch(authenticatePlayer({
+      telegramId: 'TEST_USER_001',
+      username: 'test_user',
+      firstName: 'Test',
+      lastName: 'User',
+      avatar: ''
+    }));
+  };
 
   useEffect(() => {
     if (!player || !currentLocation) return;
@@ -65,6 +76,12 @@ const ChatView = () => {
         <div className="auth-message">
           <h2>Чат</h2>
           <p>Для доступа к чату необходимо войти в игру</p>
+          <button 
+            onClick={handleTestLogin}
+            className="test-login-button"
+          >
+            Войти как тестовый пользователь
+          </button>
         </div>
       </div>
     );

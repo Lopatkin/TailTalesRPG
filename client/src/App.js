@@ -42,14 +42,18 @@ const AppContent = () => {
       }
     }
 
-    if (!player && !isTelegramWebApp) {
-      dispatch(authenticatePlayer({
-        telegramId: 'TEST_USER_001',
-        username: 'test_user',
-        firstName: 'Test',
-        lastName: 'User',
-        avatar: ''
-      }));
+    // Если не Telegram WebApp или не удалось получить данные пользователя, делаем тестовый вход
+    if (!player) {
+      // Небольшая задержка для корректной инициализации
+      setTimeout(() => {
+        dispatch(authenticatePlayer({
+          telegramId: 'TEST_USER_001',
+          username: 'test_user',
+          firstName: 'Test',
+          lastName: 'User',
+          avatar: ''
+        }));
+      }, 100);
     }
   }, [dispatch, player]);
 
