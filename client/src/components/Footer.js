@@ -20,19 +20,19 @@ const Footer = () => {
     <footer className="footer">
       <nav className="footer-nav">
         <button 
-          className={`nav-button ${isActive('/') ? 'active' : ''}`}
-          onClick={() => navigate('/')}
-        >
-          <span className="nav-icon">🌲</span>
-          <span className="nav-label">Локация</span>
-        </button>
-        
-        <button 
           className={`nav-button ${isActive('/chat') ? 'active' : ''}`}
           onClick={() => navigate('/chat')}
         >
           <span className="nav-icon">💬</span>
           <span className="nav-label">Чат</span>
+        </button>
+        
+        <button 
+          className={`nav-button ${isActive('/location') ? 'active' : ''}`}
+          onClick={() => navigate('/location')}
+        >
+          <span className="nav-icon">🌲</span>
+          <span className="nav-label">Локация</span>
         </button>
         
         <button 

@@ -58,8 +58,8 @@ const AppContent = () => {
       <Header />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<LocationView />} />
-          <Route path="/chat" element={<ChatView />} />
+          <Route path="/" element={<ChatView />} />
+          <Route path="/location" element={<LocationView />} />
           <Route path="/map" element={<WorldMapView />} />
           <Route path="/profile" element={<ProfileView />} />
         </Routes>
