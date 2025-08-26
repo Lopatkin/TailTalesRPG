@@ -43,22 +43,17 @@ const Header = () => {
                 Уровень {player.level}
               </div>
             </div>
-          </div>
-        </div>
-        
-        <div className="header-right">
-          <div className="experience-bar">
-            <div className="exp-label">Опыт</div>
-            <div className="exp-bar">
-              <div 
-                className="exp-fill" 
-                style={{ 
-                  width: `${(player.experience % 100) / 100 * 100}%` 
-                }}
-              ></div>
-            </div>
-            <div className="exp-text">
-              {player.experience % 100} / 100
+            <div className="experience-info">
+              <span>Опыт:</span>
+              <div className="exp-bar">
+                <div 
+                  className="exp-fill" 
+                  style={{ 
+                    width: `${(player.experience % 100) / 100 * 100}%` 
+                  }}
+                ></div>
+              </div>
+              <span>{player.experience % 100}/100</span>
             </div>
           </div>
         </div>
