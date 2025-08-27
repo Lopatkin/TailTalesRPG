@@ -108,7 +108,7 @@ const ChatView = () => {
     return () => {
       newSocket.close();
     };
-  }, [dispatch, player, locationObject, currentLocation]);
+  }, [dispatch, player, locationObject, currentLocation, socket]);
 
   useEffect(() => {
     // Прокручиваем к последнему сообщению
