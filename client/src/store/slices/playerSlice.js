@@ -80,6 +80,7 @@ const playerSlice = createSlice({
       .addCase(authenticatePlayer.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
+        state.currentLocation = action.payload.currentLocation;
         state.isAuthenticated = true;
       })
       .addCase(authenticatePlayer.rejected, (state, action) => {

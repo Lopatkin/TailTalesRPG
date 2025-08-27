@@ -11,6 +11,9 @@ const ChatView = () => {
   const player = useSelector(state => state.player.data);
   const currentLocation = useSelector(state => state.player.currentLocation);
   const messages = useSelector(state => state.chat.messages);
+  
+  // Отладочная информация
+  console.log('ChatView render:', { player, currentLocation, messages });
   const [message, setMessage] = useState('');
   const [socket, setSocket] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -59,19 +62,21 @@ const ChatView = () => {
     (async () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_SERVER_URL || 'http://localhost:5000'}/api/messages/location/${currentLocation._id}?limit=100`);
-        res.data.forEach((m) => {
-          dispatch(addMessage({
-            _id: m._id,
-            locationId: currentLocation._id,
-            playerId: m.player,
-            playerName: m.playerName,
-            playerAvatar: m.playerAvatar,
-            message: m.text,
-            timestamp: m.createdAt
-          }));
-        });
+        if (res.data && Array.isArray(res.data)) {
+          res.data.forEach((m) => {
+            dispatch(addMessage({
+              _id: m._id,
+              locationId: currentLocation._id,
+              playerId: m.player,
+              playerName: m.playerName,
+              playerAvatar: m.playerAvatar,
+              message: m.text,
+              timestamp: m.createdAt
+            }));
+          });
+        }
       } catch (err) {
-        // ignore for now
+        console.error('Failed to load messages:', err);
       }
     })();
 
@@ -121,7 +126,41 @@ const ChatView = () => {
   if (!currentLocation) {
     return (
       <div className="chat-view">
-        <div className="loading">Загрузка чата...</div>
+        <div className="chat-header">
+          <h2>Чат</h2>
+          <p className="chat-description">
+            Выберите локацию для начала общения
+          </p>
+        </div>
+        <div className="chat-messages">
+          <div className="no-messages">
+            <p>Перейдите в раздел "Карта" и выберите локацию</p>
+          </div>
+        </div>
+        <form className="chat-input-form">
+          <div className="chat-input-container">
+            <button 
+              type="button"
+              className="participants-button"
+              disabled
+            >
+              👥 0
+            </button>
+            <input
+              type="text"
+              placeholder="Сначала выберите локацию..."
+              className="chat-input"
+              disabled
+            />
+            <button 
+              type="button" 
+              className="send-button"
+              disabled
+            >
+              Отправить
+            </button>
+          </div>
+        </form>
       </div>
     );
   }
@@ -149,7 +188,13 @@ const ChatView = () => {
             >
               {msg.playerId !== player._id && (
                 <div className="message-header with-avatar">
-                  <img className="avatar" src={msg.playerAvatar || '/avatar-placeholder.png'} alt="avatar" />
+                  {msg.playerAvatar ? (
+                    <img className="avatar" src={msg.playerAvatar} alt="avatar" />
+                  ) : (
+                    <div className="avatar-placeholder">
+                      {msg.playerName ? msg.playerName[0].toUpperCase() : '?'}
+                    </div>
+                  )}
                   <span className="player-name">{msg.playerName}</span>
                   <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
                 </div>

@@ -125,6 +125,20 @@
   border: 2px solid #ddd;
 }
 
+.message-header .avatar-placeholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #4a90e2;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  border: 2px solid #ddd;
+}
+
 .message-header.own {
   justify-content: flex-end;
 }

@@ -15,10 +15,13 @@ const chatSlice = createSlice({
       state.currentLocationId = action.payload;
     },
     addMessage: (state, action) => {
-      state.messages.push(action.payload);
-      // Ограничиваем количество сообщений в памяти
-      if (state.messages.length > 100) {
-        state.messages = state.messages.slice(-100);
+      // Добавляем сообщение только если оно для текущей локации
+      if (action.payload.locationId === state.currentLocationId) {
+        state.messages.push(action.payload);
+        // Ограничиваем количество сообщений в памяти
+        if (state.messages.length > 100) {
+          state.messages = state.messages.slice(-100);
+        }
       }
     },
     clearMessages: (state) => {

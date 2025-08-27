@@ -9,11 +9,20 @@ import ChatView from './components/ChatView';
 import WorldMapView from './components/WorldMapView';
 import ProfileView from './components/ProfileView';
 import './App.css';
-import { authenticatePlayer } from './store/slices/playerSlice';
+import { authenticatePlayer, setCurrentLocation } from './store/slices/playerSlice';
+import { fetchLocations } from './store/slices/locationSlice';
 
 const AppContent = () => {
   const dispatch = useDispatch();
   const player = useSelector(state => state.player.data);
+  const locations = useSelector(state => state.location.locations);
+
+  useEffect(() => {
+    // Загружаем локации при первом запуске
+    if (locations.length === 0) {
+      dispatch(fetchLocations());
+    }
+  }, [dispatch, locations.length]);
 
   useEffect(() => {
     const isTelegramWebApp = typeof window !== 'undefined' && window.Telegram && window.Telegram.WebApp;
@@ -56,6 +65,17 @@ const AppContent = () => {
       }, 100);
     }
   }, [dispatch, player]);
+
+  // Устанавливаем локацию по умолчанию для нового игрока
+  useEffect(() => {
+    if (player && !player.currentLocation && locations.length > 0) {
+      // Устанавливаем первую доступную локацию (обычно это "Лес")
+      const defaultLocation = locations.find(loc => loc.type === 'forest') || locations[0];
+      if (defaultLocation) {
+        dispatch(setCurrentLocation(defaultLocation));
+      }
+    }
+  }, [dispatch, player, locations]);
 
   return (
     <div className="App">
