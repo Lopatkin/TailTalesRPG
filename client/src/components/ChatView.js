@@ -10,7 +10,13 @@ const ChatView = () => {
   const dispatch = useDispatch();
   const player = useSelector(state => state.player.data);
   const currentLocation = useSelector(state => state.player.currentLocation);
+  const locations = useSelector(state => state.location.locations);
   const messages = useSelector(state => state.chat.messages);
+  
+  // Получаем полный объект локации
+  const locationObject = typeof currentLocation === 'string' 
+    ? locations.find(loc => loc._id === currentLocation)
+    : currentLocation;
   
 
   const [message, setMessage] = useState('');
@@ -31,12 +37,12 @@ const ChatView = () => {
   
 
   useEffect(() => {
-    console.log('ChatView useEffect:', { player, currentLocation });
-    if (!player || !currentLocation) return;
+    console.log('ChatView useEffect:', { player, currentLocation, locationObject });
+    if (!player || !locationObject) return;
     
     // Проверяем, что у локации есть ID
-    if (!currentLocation._id) {
-      console.error('Location has no _id:', currentLocation);
+    if (!locationObject._id) {
+      console.error('Location has no _id:', locationObject);
       return;
     }
 
@@ -49,14 +55,14 @@ const ChatView = () => {
 
     // Присоединяемся к чату локации
     newSocket.emit('join-location', {
-      locationId: currentLocation._id,
+      locationId: locationObject._id,
       playerId: player._id,
       playerName: `${player.firstName} ${player.lastName}`.trim(),
       playerAvatar: player.avatar || ''
     });
 
     // Обновляем текущую локацию в чате (только ID для фильтрации сообщений)
-    dispatch(setCurrentLocation(currentLocation._id));
+    dispatch(setCurrentLocation(locationObject._id));
     // Очищаем сообщения при смене локации и перед загрузкой истории
     dispatch(clearMessages());
 
@@ -71,14 +77,14 @@ const ChatView = () => {
     // Запрашиваем историю сообщений
     (async () => {
       try {
-        console.log('Loading messages for location:', currentLocation._id);
-        const res = await api.get(`/api/messages/location/${currentLocation._id}?limit=100`);
+        console.log('Loading messages for location:', locationObject._id);
+        const res = await api.get(`/api/messages/location/${locationObject._id}?limit=100`);
         if (res.data && Array.isArray(res.data)) {
           console.log('Loaded messages:', res.data.length);
           res.data.forEach((m) => {
             dispatch(addMessage({
               _id: m._id,
-              locationId: currentLocation._id,
+              locationId: locationObject._id,
               playerId: m.player,
               playerName: m.playerName,
               playerAvatar: m.playerAvatar,
@@ -96,7 +102,7 @@ const ChatView = () => {
     return () => {
       newSocket.close();
     };
-  }, [dispatch, player, currentLocation]);
+  }, [dispatch, player, locationObject]);
 
   useEffect(() => {
     // Прокручиваем к последнему сообщению
@@ -105,10 +111,10 @@ const ChatView = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (!message.trim() || !socket || !player || !currentLocation) return;
+    if (!message.trim() || !socket || !player || !locationObject) return;
 
     const messageData = {
-      locationId: currentLocation._id,
+      locationId: locationObject._id,
       playerId: player._id,
       message: message.trim(),
       playerName: `${player.firstName} ${player.lastName}`.trim(),
@@ -136,7 +142,7 @@ const ChatView = () => {
     );
   }
 
-  if (!currentLocation) {
+  if (!locationObject) {
     return (
       <div className="chat-view">
         <div className="chat-header">
@@ -181,7 +187,7 @@ const ChatView = () => {
   return (
     <div className="chat-view">
       <div className="chat-header">
-        <h2>Чат локации: {currentLocation.name}</h2>
+        <h2>Чат локации: {locationObject.name}</h2>
         <p className="chat-description">
           Общайтесь с другими игроками в этой локации
         </p>

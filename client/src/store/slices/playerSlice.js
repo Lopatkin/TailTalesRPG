@@ -81,6 +81,7 @@ const playerSlice = createSlice({
       .addCase(authenticatePlayer.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
+        // currentLocation может быть ID или объектом, оставляем как есть
         state.currentLocation = action.payload.currentLocation;
         state.isAuthenticated = true;
       })
