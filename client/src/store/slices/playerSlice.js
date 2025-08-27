@@ -54,6 +54,7 @@ const playerSlice = createSlice({
       state.isAuthenticated = true;
     },
     setCurrentLocation: (state, action) => {
+      console.log('Setting current location in playerSlice:', action.payload);
       state.currentLocation = action.payload;
     },
     updateExperience: (state, action) => {

@@ -43,6 +43,7 @@ const locationSlice = createSlice({
       .addCase(fetchLocations.fulfilled, (state, action) => {
         state.loading = false;
         state.locations = action.payload;
+        console.log('Locations fetched successfully:', action.payload);
       })
       .addCase(fetchLocations.rejected, (state, action) => {
         state.loading = false;

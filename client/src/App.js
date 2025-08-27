@@ -20,7 +20,10 @@ const AppContent = () => {
   useEffect(() => {
     // Загружаем локации при первом запуске
     if (locations.length === 0) {
+      console.log('Fetching locations...');
       dispatch(fetchLocations());
+    } else {
+      console.log('Locations loaded:', locations);
     }
   }, [dispatch, locations.length]);
 
@@ -72,6 +75,7 @@ const AppContent = () => {
       // Устанавливаем первую доступную локацию (обычно это "Лес")
       const defaultLocation = locations.find(loc => loc.type === 'forest') || locations[0];
       if (defaultLocation) {
+        console.log('Setting default location:', defaultLocation);
         dispatch(setCurrentLocation(defaultLocation));
       }
     }

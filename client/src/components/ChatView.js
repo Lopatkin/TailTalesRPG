@@ -31,7 +31,14 @@ const ChatView = () => {
   
 
   useEffect(() => {
+    console.log('ChatView useEffect:', { player, currentLocation });
     if (!player || !currentLocation) return;
+    
+    // Проверяем, что у локации есть ID
+    if (!currentLocation._id) {
+      console.error('Location has no _id:', currentLocation);
+      return;
+    }
 
     // Подключаемся к Socket.io
     const newSocket = io('https://tailtalesrpg.onrender.com', {
@@ -48,7 +55,7 @@ const ChatView = () => {
       playerAvatar: player.avatar || ''
     });
 
-    // Обновляем текущую локацию в чате
+    // Обновляем текущую локацию в чате (только ID для фильтрации сообщений)
     dispatch(setCurrentLocation(currentLocation._id));
     // Очищаем сообщения при смене локации и перед загрузкой истории
     dispatch(clearMessages());
@@ -64,8 +71,10 @@ const ChatView = () => {
     // Запрашиваем историю сообщений
     (async () => {
       try {
+        console.log('Loading messages for location:', currentLocation._id);
         const res = await api.get(`/api/messages/location/${currentLocation._id}?limit=100`);
         if (res.data && Array.isArray(res.data)) {
+          console.log('Loaded messages:', res.data.length);
           res.data.forEach((m) => {
             dispatch(addMessage({
               _id: m._id,
@@ -80,6 +89,7 @@ const ChatView = () => {
         }
       } catch (err) {
         console.error('Failed to load messages:', err);
+        console.error('Error details:', err.response?.data);
       }
     })();
 
