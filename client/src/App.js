@@ -25,7 +25,7 @@ const AppContent = () => {
     } else {
       console.log('Locations loaded:', locations);
     }
-  }, [dispatch, locations.length]);
+  }, [dispatch, locations.length, locations]);
 
   useEffect(() => {
     const isTelegramWebApp = typeof window !== 'undefined' && window.Telegram && window.Telegram.WebApp;
