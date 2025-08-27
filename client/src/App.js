@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './store/store';
 import Header from './components/Header';
@@ -62,7 +62,8 @@ const AppContent = () => {
       <Header />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<ChatView />} />
+          <Route path="/" element={<Navigate to="/chat" replace />} />
+          <Route path="/chat" element={<ChatView />} />
           <Route path="/location" element={<LocationView />} />
           <Route path="/map" element={<WorldMapView />} />
           <Route path="/profile" element={<ProfileView />} />
