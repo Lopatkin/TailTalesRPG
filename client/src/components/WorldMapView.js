@@ -11,19 +11,24 @@ const WorldMapView = () => {
   const locations = useSelector(state => state.location.locations);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [moveResult, setMoveResult] = useState(null);
+  
+  // Получаем полный объект текущей локации
+  const currentLocationObject = typeof currentLocation === 'string' 
+    ? locations.find(loc => loc._id === currentLocation)
+    : currentLocation;
 
   useEffect(() => {
     dispatch(fetchLocations());
   }, [dispatch]);
 
   useEffect(() => {
-    if (currentLocation) {
-      setSelectedLocation(currentLocation);
+    if (currentLocationObject) {
+      setSelectedLocation(currentLocationObject);
     }
-  }, [currentLocation]);
+  }, [currentLocationObject]);
 
   const handleMove = async (targetLocation) => {
-    if (!player || !currentLocation) return;
+    if (!player || !currentLocationObject) return;
 
     try {
       const result = await dispatch(updatePlayerLocation({
@@ -95,9 +100,9 @@ const WorldMapView = () => {
       <div className="map-container">
         <div className="map-grid">
           {locations.map((location) => {
-            const isCurrent = currentLocation && currentLocation._id === location._id;
-            const isConnected = currentLocation && 
-              currentLocation.connectedLocations?.some(
+            const isCurrent = currentLocationObject && currentLocationObject._id === location._id;
+            const isConnected = currentLocationObject && 
+              currentLocationObject.connectedLocations?.some(
                 conn => conn.location === location._id
               );
             const canMove = isConnected && !isCurrent;
@@ -143,8 +148,8 @@ const WorldMapView = () => {
                     const targetLocation = locations.find(l => l._id === connection.location);
                     if (!targetLocation) return null;
 
-                    const isCurrent = currentLocation && currentLocation._id === targetLocation._id;
-                    const canMove = currentLocation && currentLocation._id === selectedLocation._id;
+                    const isCurrent = currentLocationObject && currentLocationObject._id === targetLocation._id;
+                    const canMove = currentLocationObject && currentLocationObject._id === selectedLocation._id;
 
                     return (
                       <div key={index} className="connection-item">
@@ -174,7 +179,7 @@ const WorldMapView = () => {
               )}
             </div>
 
-            {currentLocation && currentLocation._id === selectedLocation._id && (
+            {currentLocationObject && currentLocationObject._id === selectedLocation._id && (
               <div className="current-location-info">
                 <h4>Вы находитесь здесь</h4>
                 <p>Используйте вкладку "Локация" для взаимодействия с объектами</p>

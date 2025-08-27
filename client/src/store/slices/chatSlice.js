@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { updatePlayerLocation } from './playerSlice';
 
 const initialState = {
   messages: [],
@@ -33,6 +34,15 @@ const chatSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updatePlayerLocation.fulfilled, (state, action) => {
+        // При смене локации очищаем сообщения и обновляем ID текущей локации
+        state.messages = [];
+        state.currentLocationId = action.payload.newLocation._id;
+        console.log('Chat cleared for new location:', action.payload.newLocation._id);
+      });
   }
 });
 

@@ -99,7 +99,9 @@ const playerSlice = createSlice({
         state.isAuthenticated = true;
       })
       .addCase(updatePlayerLocation.fulfilled, (state, action) => {
-        state.currentLocation = action.payload.newLocation;
+        // Обновляем currentLocation на новую локацию
+        state.currentLocation = action.payload.newLocation._id;
+        console.log('Player moved to new location:', action.payload.newLocation);
       })
       .addCase(performAction.fulfilled, (state, action) => {
         if (state.data) {

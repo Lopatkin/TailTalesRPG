@@ -45,6 +45,12 @@ const ChatView = () => {
       console.error('Location has no _id:', locationObject);
       return;
     }
+    
+    // Если это новая локация, очищаем сообщения
+    if (socket) {
+      socket.close();
+      setSocket(null);
+    }
 
     // Подключаемся к Socket.io
     const newSocket = io('https://tailtalesrpg.onrender.com', {
