@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../config/axios';
 
 export const fetchLocations = createAsyncThunk(
   'location/fetchAll',
   async () => {
-    const response = await axios.get('/api/locations');
+    const response = await api.get('/api/locations');
     return response.data.locations;
   }
 );
@@ -12,7 +12,7 @@ export const fetchLocations = createAsyncThunk(
 export const fetchLocationById = createAsyncThunk(
   'location/fetchById',
   async (locationId) => {
-    const response = await axios.get(`/api/locations/${locationId}`);
+    const response = await api.get(`/api/locations/${locationId}`);
     return response.data.location;
   }
 );

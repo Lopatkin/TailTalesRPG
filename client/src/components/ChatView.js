@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
 import { addMessage, setCurrentLocation, clearMessages } from '../store/slices/chatSlice';
-import axios from 'axios';
+import api from '../config/axios';
 import { authenticatePlayer } from '../store/slices/playerSlice';
 import './ChatView.css';
 
@@ -12,8 +12,7 @@ const ChatView = () => {
   const currentLocation = useSelector(state => state.player.currentLocation);
   const messages = useSelector(state => state.chat.messages);
   
-  // Отладочная информация
-  console.log('ChatView render:', { player, currentLocation, messages });
+
   const [message, setMessage] = useState('');
   const [socket, setSocket] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -29,12 +28,16 @@ const ChatView = () => {
       avatar: ''
     }));
   };
+  
 
   useEffect(() => {
     if (!player || !currentLocation) return;
 
     // Подключаемся к Socket.io
-    const newSocket = io('http://localhost:5000');
+    const newSocket = io('https://tailtalesrpg.onrender.com', {
+      transports: ['websocket', 'polling'],
+      timeout: 20000
+    });
     setSocket(newSocket);
 
     // Присоединяемся к чату локации
@@ -61,7 +64,7 @@ const ChatView = () => {
     // Запрашиваем историю сообщений
     (async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_SERVER_URL || 'http://localhost:5000'}/api/messages/location/${currentLocation._id}?limit=100`);
+        const res = await api.get(`/api/messages/location/${currentLocation._id}?limit=100`);
         if (res.data && Array.isArray(res.data)) {
           res.data.forEach((m) => {
             dispatch(addMessage({

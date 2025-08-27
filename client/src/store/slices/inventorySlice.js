@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../config/axios';
 
 export const fetchInventory = createAsyncThunk(
   'inventory/fetch',
   async (playerId) => {
-    const response = await axios.get(`/api/players/${playerId}/inventory`);
+    const response = await api.get(`/api/players/${playerId}/inventory`);
     return response.data.inventory;
   }
 );
@@ -12,7 +12,7 @@ export const fetchInventory = createAsyncThunk(
 export const useItem = createAsyncThunk(
   'inventory/useItem',
   async ({ playerId, itemId }) => {
-    const response = await axios.post(`/api/players/${playerId}/use-item`, { itemId });
+    const response = await api.post(`/api/players/${playerId}/use-item`, { itemId });
     return { itemId, ...response.data };
   }
 );

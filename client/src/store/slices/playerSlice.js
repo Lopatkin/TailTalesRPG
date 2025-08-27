@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../config/axios';
 
 // Асинхронные действия
 export const authenticatePlayer = createAsyncThunk(
   'player/authenticate',
   async (telegramData) => {
-    const response = await axios.post('/api/auth/telegram', telegramData);
+    const response = await api.post('/api/auth/telegram', telegramData);
     return response.data.player;
   }
 );
@@ -13,7 +13,7 @@ export const authenticatePlayer = createAsyncThunk(
 export const fetchPlayerData = createAsyncThunk(
   'player/fetchData',
   async (telegramId) => {
-    const response = await axios.get(`/api/auth/me?telegramId=${telegramId}`);
+    const response = await api.get(`/api/auth/me?telegramId=${telegramId}`);
     return response.data.player;
   }
 );
@@ -21,7 +21,7 @@ export const fetchPlayerData = createAsyncThunk(
 export const updatePlayerLocation = createAsyncThunk(
   'player/updateLocation',
   async ({ playerId, locationId }) => {
-    const response = await axios.post(`/api/locations/${locationId}/move`, { playerId });
+    const response = await api.post(`/api/locations/${locationId}/move`, { playerId });
     return response.data;
   }
 );
@@ -29,7 +29,7 @@ export const updatePlayerLocation = createAsyncThunk(
 export const performAction = createAsyncThunk(
   'player/performAction',
   async ({ playerId, locationId, actionName }) => {
-    const response = await axios.post(`/api/locations/${locationId}/action`, { 
+    const response = await api.post(`/api/locations/${locationId}/action`, { 
       playerId, 
       actionName 
     });
