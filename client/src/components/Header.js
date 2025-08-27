@@ -5,6 +5,12 @@ import './Header.css';
 const Header = () => {
   const player = useSelector(state => state.player.data);
   const currentLocation = useSelector(state => state.player.currentLocation);
+  const locations = useSelector(state => state.location.locations);
+  
+  // Получаем полный объект локации
+  const locationObject = typeof currentLocation === 'string' 
+    ? locations.find(loc => loc._id === currentLocation)
+    : currentLocation;
 
   if (!player) {
     return (
@@ -21,7 +27,7 @@ const Header = () => {
     <header className="header">
       <div className="header-content">
         <div className="header-left">
-          <h1>{currentLocation ? currentLocation.name : 'Неизвестная локация'}</h1>
+          <h1>{locationObject ? locationObject.name : 'Неизвестная локация'}</h1>
         </div>
         
         <div className="header-center">

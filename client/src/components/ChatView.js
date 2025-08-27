@@ -187,10 +187,7 @@ const ChatView = () => {
   return (
     <div className="chat-view">
       <div className="chat-header">
-        <h2>Чат локации: {locationObject.name}</h2>
-        <p className="chat-description">
-          Общайтесь с другими игроками в этой локации
-        </p>
+        <h2>{locationObject.name}</h2>
       </div>
 
       <div className="chat-messages">
