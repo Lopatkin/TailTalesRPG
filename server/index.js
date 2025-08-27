@@ -36,12 +36,14 @@ db.once('open', () => {
 const Player = require('./models/Player');
 const Location = require('./models/Location');
 const Item = require('./models/Item');
+const Message = require('./models/Message');
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/players', require('./routes/players'));
 app.use('/api/locations', require('./routes/locations'));
 app.use('/api/items', require('./routes/items'));
+app.use('/api/messages', require('./routes/messages'));
 
 // Одноразовая инициализация БД через HTTP (защита по токену)
 app.post('/admin/init-db', async (req, res) => {
@@ -62,23 +64,52 @@ app.post('/admin/init-db', async (req, res) => {
 // Socket.io обработка
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
+  // Локальное хранилище участников по локациям
+  if (!io.locationParticipants) {
+    io.locationParticipants = new Map(); // key: locationId, value: Map(socketId -> {playerId,name,avatar})
+  }
 
   // Присоединение к чату локации
   socket.on('join-location', async (data) => {
-    const { locationId, playerId } = data;
+    const { locationId, playerId, playerName, playerAvatar } = data;
     socket.join(`location-${locationId}`);
     console.log(`Player ${playerId} joined location ${locationId}`);
+
+    // Сохраняем участника
+    const map = io.locationParticipants.get(locationId) || new Map();
+    map.set(socket.id, { playerId, name: playerName || 'Игрок', avatar: playerAvatar || '' });
+    io.locationParticipants.set(locationId, map);
+
+    // Оповещаем комнату
+    io.to(`location-${locationId}`).emit('participants-update', Array.from(map.values()));
   });
 
   // Отправка сообщения в чат
   socket.on('send-message', async (data) => {
-    const { locationId, playerId, message, playerName } = data;
-    io.to(`location-${locationId}`).emit('new-message', {
-      playerId,
-      playerName,
-      message,
-      timestamp: new Date()
-    });
+    try {
+      const { locationId, playerId, message, playerName, playerAvatar } = data;
+      // Сохраняем в БД
+      const saved = await Message.create({
+        location: locationId,
+        player: playerId,
+        playerName: playerName || 'Игрок',
+        playerAvatar: playerAvatar || '',
+        text: message
+      });
+
+      // Рассылаем по комнате локации
+      io.to(`location-${locationId}`).emit('new-message', {
+        _id: saved._id,
+        locationId,
+        playerId,
+        playerName: saved.playerName,
+        playerAvatar: saved.playerAvatar,
+        message: saved.text,
+        timestamp: saved.createdAt
+      });
+    } catch (err) {
+      console.error('send-message error:', err);
+    }
   });
 
   // Перемещение игрока
@@ -96,6 +127,12 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
+    // Удаляем из всех локаций, куда был добавлен
+    for (const [locId, map] of io.locationParticipants.entries()) {
+      if (map.delete(socket.id)) {
+        io.to(`location-${locId}`).emit('participants-update', Array.from(map.values()));
+      }
+    }
   });
 });
 

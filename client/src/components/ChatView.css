@@ -78,7 +78,7 @@
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  background: #f8f9fa;
+  background: #e5e7eb; /* серый фон вместо картинки */
 }
 
 .no-messages {
@@ -110,6 +110,23 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4px;
+}
+
+.message-header.with-avatar {
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.message-header .avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.message-header.own {
+  justify-content: flex-end;
 }
 
 .player-name {
@@ -152,6 +169,15 @@
   display: flex;
   gap: 12px;
   margin-bottom: 8px;
+}
+
+.participants-button {
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 16px;
 }
 
 .chat-input {
@@ -263,6 +289,33 @@
   .send-button {
     align-self: flex-end;
   }
+}
+
+.participants-list {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.participant-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+}
+
+.participant-item .avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.participant-item .name {
+  font-size: 14px;
+  color: #333;
 }
 
 @media (max-width: 480px) {

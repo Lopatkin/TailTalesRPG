@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
-import { addMessage, setCurrentLocation } from '../store/slices/chatSlice';
+import { addMessage, setCurrentLocation, clearMessages } from '../store/slices/chatSlice';
+import axios from 'axios';
 import { authenticatePlayer } from '../store/slices/playerSlice';
 import './ChatView.css';
 
@@ -12,6 +13,8 @@ const ChatView = () => {
   const messages = useSelector(state => state.chat.messages);
   const [message, setMessage] = useState('');
   const [socket, setSocket] = useState(null);
+  const [participants, setParticipants] = useState([]);
+  const [showParticipants, setShowParticipants] = useState(false);
   const messagesEndRef = useRef(null);
 
   const handleTestLogin = () => {
@@ -34,16 +37,43 @@ const ChatView = () => {
     // Присоединяемся к чату локации
     newSocket.emit('join-location', {
       locationId: currentLocation._id,
-      playerId: player._id
+      playerId: player._id,
+      playerName: `${player.firstName} ${player.lastName}`.trim(),
+      playerAvatar: player.avatar || ''
     });
 
     // Обновляем текущую локацию в чате
     dispatch(setCurrentLocation(currentLocation._id));
+    // Очищаем сообщения при смене локации и перед загрузкой истории
+    dispatch(clearMessages());
 
     // Слушаем новые сообщения
     newSocket.on('new-message', (messageData) => {
       dispatch(addMessage(messageData));
     });
+    newSocket.on('participants-update', (list) => {
+      setParticipants(list);
+    });
+
+    // Запрашиваем историю сообщений
+    (async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_SERVER_URL || 'http://localhost:5000'}/api/messages/location/${currentLocation._id}?limit=100`);
+        res.data.forEach((m) => {
+          dispatch(addMessage({
+            _id: m._id,
+            locationId: currentLocation._id,
+            playerId: m.player,
+            playerName: m.playerName,
+            playerAvatar: m.playerAvatar,
+            message: m.text,
+            timestamp: m.createdAt
+          }));
+        });
+      } catch (err) {
+        // ignore for now
+      }
+    })();
 
     return () => {
       newSocket.close();
@@ -63,7 +93,8 @@ const ChatView = () => {
       locationId: currentLocation._id,
       playerId: player._id,
       message: message.trim(),
-      playerName: `${player.firstName} ${player.lastName}`.trim()
+      playerName: `${player.firstName} ${player.lastName}`.trim(),
+      playerAvatar: player.avatar || ''
     };
 
     socket.emit('send-message', messageData);
@@ -116,12 +147,18 @@ const ChatView = () => {
               key={index} 
               className={`message ${msg.playerId === player._id ? 'own-message' : 'other-message'}`}
             >
-              <div className="message-header">
-                <span className="player-name">{msg.playerName}</span>
-                <span className="message-time">
-                  {new Date(msg.timestamp).toLocaleTimeString()}
-                </span>
-              </div>
+              {msg.playerId !== player._id && (
+                <div className="message-header with-avatar">
+                  <img className="avatar" src={msg.playerAvatar || '/avatar-placeholder.png'} alt="avatar" />
+                  <span className="player-name">{msg.playerName}</span>
+                  <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                </div>
+              )}
+              {msg.playerId === player._id && (
+                <div className="message-header own">
+                  <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                </div>
+              )}
               <div className="message-content">{msg.message}</div>
             </div>
           ))
@@ -131,6 +168,13 @@ const ChatView = () => {
 
       <form className="chat-input-form" onSubmit={sendMessage}>
         <div className="chat-input-container">
+          <button 
+            type="button"
+            className="participants-button"
+            onClick={() => setShowParticipants((s) => !s)}
+          >
+            👥 {participants.length || 0}
+          </button>
           <input
             type="text"
             value={message}
@@ -150,6 +194,18 @@ const ChatView = () => {
         <div className="message-counter">
           {message.length}/200
         </div>
+        {showParticipants && (
+          <div className="participants-list">
+            {participants.length === 0 ? (
+              <div className="empty">Пока никого нет</div>
+            ) : participants.map((p) => (
+              <div key={p.playerId} className="participant-item">
+                <img className="avatar" src={p.avatar || '/avatar-placeholder.png'} alt="avatar" />
+                <span className="name">{p.name}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </form>
     </div>
   );
