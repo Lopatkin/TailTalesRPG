@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { io } from 'socket.io-client';
-import { addMessage, setCurrentLocation, clearMessages } from '../store/slices/chatSlice';
-import api from '../config/axios';
+import { addMessage } from '../store/slices/chatSlice';
+import { useChatSocket } from '../hooks/useChatSocket';
 import { authenticatePlayer } from '../store/slices/playerSlice';
 import './ChatView.css';
 
@@ -38,91 +37,8 @@ const ChatView = () => {
 
   
 
-  useEffect(() => {
-    console.log('ChatView useEffect:', { player, currentLocation, locationObject });
-    if (!player || !locationObject) return;
-    
-    // Проверяем, что у локации есть ID
-    if (!locationObject._id) {
-      console.error('Location has no _id:', locationObject);
-      return;
-    }
-    
-    // Если это новая локация, закрываем старый socket
-    if (socketRef.current && socketRef.current.connected) {
-      socketRef.current.disconnect();
-      socketRef.current = null;
-    }
-
-    // Подключаемся к Socket.io
-    console.log('Connecting to Socket.io...');
-    const newSocket = io('https://tailtalesrpg.onrender.com', {
-      transports: ['websocket', 'polling'],
-      timeout: 20000
-    });
-    
-    newSocket.on('connect', () => {
-      console.log('Socket connected successfully');
-    });
-    
-    newSocket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
-    });
-    
-    socketRef.current = newSocket;
-
-    // Присоединяемся к чату локации
-    newSocket.emit('join-location', {
-      locationId: locationObject._id,
-      playerId: player._id,
-      playerName: `${player.firstName} ${player.lastName}`.trim(),
-      playerAvatar: player.avatar || ''
-    });
-
-    // Обновляем текущую локацию в чате (только ID для фильтрации сообщений)
-    dispatch(setCurrentLocation(locationObject._id));
-    // Очищаем сообщения при смене локации и перед загрузкой истории
-    dispatch(clearMessages());
-
-    // Слушаем новые сообщения
-    newSocket.on('new-message', (messageData) => {
-      console.log('Received new message:', messageData);
-      dispatch(addMessage(messageData));
-    });
-    newSocket.on('participants-update', (list) => {
-      console.log('Participants update:', list);
-      setParticipants(list);
-    });
-
-    // Запрашиваем историю сообщений
-    (async () => {
-      try {
-        console.log('Loading messages for location:', locationObject._id);
-        const res = await api.get(`/api/messages/location/${locationObject._id}?limit=100`);
-        if (res.data && Array.isArray(res.data)) {
-          console.log('Loaded messages:', res.data.length);
-          res.data.forEach((m) => {
-            dispatch(addMessage({
-              _id: m._id,
-              locationId: locationObject._id,
-              playerId: m.player,
-              playerName: m.playerName,
-              playerAvatar: m.playerAvatar,
-              message: m.text,
-              timestamp: m.createdAt
-            }));
-          });
-        }
-      } catch (err) {
-        console.error('Failed to load messages:', err);
-        console.error('Error details:', err.response?.data);
-      }
-    })();
-
-    return () => {
-      newSocket.close();
-    };
-  }, [dispatch, player, locationObject, currentLocation]);
+  const { participants: socketParticipants, sendMessage: socketSend } = useChatSocket(player, locationObject);
+  useEffect(() => { setParticipants(socketParticipants); }, [socketParticipants]);
 
   useEffect(() => {
     // Прокручиваем к последнему сообщению
@@ -131,28 +47,16 @@ const ChatView = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    console.log('sendMessage called:', { message: message.trim(), socket: !!socketRef.current, player: !!player, locationObject: !!locationObject });
-    
-    if (!message.trim() || !socketRef.current || !player || !locationObject) {
+    if (!message.trim() || !player || !locationObject) {
       console.log('sendMessage validation failed:', { 
         hasMessage: !!message.trim(), 
-        hasSocket: !!socketRef.current, 
         hasPlayer: !!player, 
         hasLocation: !!locationObject 
       });
       return;
     }
 
-    const messageData = {
-      locationId: locationObject._id,
-      playerId: player._id,
-      message: message.trim(),
-      playerName: `${player.firstName} ${player.lastName}`.trim(),
-      playerAvatar: player.avatar || ''
-    };
-
-    console.log('Emitting send-message:', messageData);
-    socketRef.current.emit('send-message', messageData);
+    socketSend(message.trim());
     setMessage('');
   };
 
