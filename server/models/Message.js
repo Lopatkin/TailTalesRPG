@@ -27,6 +27,10 @@ const messageSchema = new mongoose.Schema({
   }
 });
 
+// Индексы для ускорения выборок и пагинации по локации и игроку
+messageSchema.index({ location: 1, createdAt: -1 });
+messageSchema.index({ player: 1, createdAt: -1 });
+
 module.exports = mongoose.model('Message', messageSchema);
 
 
