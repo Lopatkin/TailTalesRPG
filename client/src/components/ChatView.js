@@ -20,10 +20,10 @@ const ChatView = () => {
   
 
   const [message, setMessage] = useState('');
-  const [socket, setSocket] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [showParticipants, setShowParticipants] = useState(false);
   const messagesEndRef = useRef(null);
+  const socketRef = useRef(null);
 
   const handleTestLogin = () => {
     dispatch(authenticatePlayer({
@@ -37,11 +37,11 @@ const ChatView = () => {
 
   // Стабильная функция для закрытия socket
   const closeSocket = useCallback(() => {
-    if (socket && socket.connected) {
-      socket.disconnect();
-      setSocket(null);
+    if (socketRef.current && socketRef.current.connected) {
+      socketRef.current.disconnect();
+      socketRef.current = null;
     }
-  }, [socket]);
+  }, []);
   
 
   useEffect(() => {
@@ -55,7 +55,9 @@ const ChatView = () => {
     }
     
     // Если это новая локация, закрываем старый socket
-    closeSocket();
+    if (socketRef.current) {
+      closeSocket();
+    }
 
     // Подключаемся к Socket.io
     console.log('Connecting to Socket.io...');
@@ -72,7 +74,7 @@ const ChatView = () => {
       console.error('Socket connection error:', error);
     });
     
-    setSocket(newSocket);
+    socketRef.current = newSocket;
 
     // Присоединяемся к чату локации
     newSocket.emit('join-location', {
@@ -125,7 +127,7 @@ const ChatView = () => {
     return () => {
       newSocket.close();
     };
-  }, [dispatch, player, locationObject, currentLocation, closeSocket]);
+  }, [dispatch, player, locationObject, currentLocation]);
 
   useEffect(() => {
     // Прокручиваем к последнему сообщению
@@ -134,12 +136,12 @@ const ChatView = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    console.log('sendMessage called:', { message: message.trim(), socket: !!socket, player: !!player, locationObject: !!locationObject });
+    console.log('sendMessage called:', { message: message.trim(), socket: !!socketRef.current, player: !!player, locationObject: !!locationObject });
     
-    if (!message.trim() || !socket || !player || !locationObject) {
+    if (!message.trim() || !socketRef.current || !player || !locationObject) {
       console.log('sendMessage validation failed:', { 
         hasMessage: !!message.trim(), 
-        hasSocket: !!socket, 
+        hasSocket: !!socketRef.current, 
         hasPlayer: !!player, 
         hasLocation: !!locationObject 
       });
@@ -155,7 +157,7 @@ const ChatView = () => {
     };
 
     console.log('Emitting send-message:', messageData);
-    socket.emit('send-message', messageData);
+    socketRef.current.emit('send-message', messageData);
     setMessage('');
   };
 
