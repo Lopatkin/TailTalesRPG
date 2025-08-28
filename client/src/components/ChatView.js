@@ -46,17 +46,27 @@ const ChatView = () => {
       return;
     }
     
-    // Если это новая локация, очищаем сообщения
-    if (socket) {
-      socket.close();
+    // Если это новая локация, закрываем старый socket
+    if (socket && socket.connected) {
+      socket.disconnect();
       setSocket(null);
     }
 
     // Подключаемся к Socket.io
+    console.log('Connecting to Socket.io...');
     const newSocket = io('https://tailtalesrpg.onrender.com', {
       transports: ['websocket', 'polling'],
       timeout: 20000
     });
+    
+    newSocket.on('connect', () => {
+      console.log('Socket connected successfully');
+    });
+    
+    newSocket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error);
+    });
+    
     setSocket(newSocket);
 
     // Присоединяемся к чату локации
@@ -74,9 +84,11 @@ const ChatView = () => {
 
     // Слушаем новые сообщения
     newSocket.on('new-message', (messageData) => {
+      console.log('Received new message:', messageData);
       dispatch(addMessage(messageData));
     });
     newSocket.on('participants-update', (list) => {
+      console.log('Participants update:', list);
       setParticipants(list);
     });
 
@@ -108,7 +120,7 @@ const ChatView = () => {
     return () => {
       newSocket.close();
     };
-  }, [dispatch, player, locationObject, currentLocation, socket]);
+  }, [dispatch, player, locationObject, currentLocation]);
 
   useEffect(() => {
     // Прокручиваем к последнему сообщению
@@ -117,7 +129,17 @@ const ChatView = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (!message.trim() || !socket || !player || !locationObject) return;
+    console.log('sendMessage called:', { message: message.trim(), socket: !!socket, player: !!player, locationObject: !!locationObject });
+    
+    if (!message.trim() || !socket || !player || !locationObject) {
+      console.log('sendMessage validation failed:', { 
+        hasMessage: !!message.trim(), 
+        hasSocket: !!socket, 
+        hasPlayer: !!player, 
+        hasLocation: !!locationObject 
+      });
+      return;
+    }
 
     const messageData = {
       locationId: locationObject._id,
@@ -127,6 +149,7 @@ const ChatView = () => {
       playerAvatar: player.avatar || ''
     };
 
+    console.log('Emitting send-message:', messageData);
     socket.emit('send-message', messageData);
     setMessage('');
   };

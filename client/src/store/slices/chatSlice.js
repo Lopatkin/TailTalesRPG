@@ -13,16 +13,25 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     setCurrentLocation: (state, action) => {
+      console.log('chatSlice setCurrentLocation:', action.payload);
       state.currentLocationId = action.payload;
     },
     addMessage: (state, action) => {
+      console.log('addMessage called:', { 
+        messageLocationId: action.payload.locationId, 
+        currentLocationId: state.currentLocationId,
+        willAdd: action.payload.locationId === state.currentLocationId 
+      });
       // Добавляем сообщение только если оно для текущей локации
       if (action.payload.locationId === state.currentLocationId) {
         state.messages.push(action.payload);
+        console.log('Message added, total messages:', state.messages.length);
         // Ограничиваем количество сообщений в памяти
         if (state.messages.length > 100) {
           state.messages = state.messages.slice(-100);
         }
+      } else {
+        console.log('Message rejected - wrong location');
       }
     },
     clearMessages: (state) => {
