@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addMessage } from '../store/slices/chatSlice';
+// import { addMessage } from '../store/slices/chatSlice';
 import { useChatSocket } from '../hooks/useChatSocket';
 import { authenticatePlayer } from '../store/slices/playerSlice';
 import './ChatView.css';
@@ -22,7 +22,7 @@ const ChatView = () => {
   const [participants, setParticipants] = useState([]);
   const [showParticipants, setShowParticipants] = useState(false);
   const messagesEndRef = useRef(null);
-  const socketRef = useRef(null);
+  // const socketRef = useRef(null);
 
   const handleTestLogin = () => {
     dispatch(authenticatePlayer({
