@@ -35,12 +35,19 @@ router.post('/', async (req, res) => {
     if (!locationId || !playerId || !text) {
       return res.status(400).json({ message: 'locationId, playerId и text обязательны' });
     }
+    // Санитизация текста (простая)
+    const clean = String(text)
+      .replace(/<[^>]*>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 500);
+    if (!clean) return res.status(400).json({ message: 'Пустое сообщение' });
     const created = await Message.create({
       location: locationId,
       player: playerId,
       playerName: playerName || 'Игрок',
       playerAvatar: playerAvatar || '',
-      text
+      text: clean
     });
     res.status(201).json({
       _id: created._id,

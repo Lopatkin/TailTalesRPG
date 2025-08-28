@@ -37,13 +37,29 @@ const ChatView = () => {
 
   
 
-  const { participants: socketParticipants, sendMessage: socketSend } = useChatSocket(player, locationObject);
+  const { participants: socketParticipants, sendMessage: socketSend, loadMore, loadingMore, hasMore } = useChatSocket(player, locationObject);
   useEffect(() => { setParticipants(socketParticipants); }, [socketParticipants]);
 
   useEffect(() => {
     // Прокручиваем к последнему сообщению
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Догрузка истории при прокрутке вверх
+  const onMessagesScroll = (e) => {
+    const el = e.currentTarget;
+    if (el.scrollTop <= 40 && hasMore && !loadingMore && messages.length > 0) {
+      const oldest = messages[0];
+      const prevHeight = el.scrollHeight;
+      loadMore(oldest.timestamp).then(() => {
+        // Сохраняем визуальную позицию после догрузки
+        requestAnimationFrame(() => {
+          const newHeight = el.scrollHeight;
+          el.scrollTop = newHeight - prevHeight;
+        });
+      });
+    }
+  };
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -125,7 +141,7 @@ const ChatView = () => {
         <h2>{locationObject.name}</h2>
       </div>
 
-      <div className="chat-messages">
+      <div className="chat-messages" onScroll={onMessagesScroll}>
         {messages.length === 0 ? (
           <div className="no-messages">
             <p>Пока нет сообщений в чате</p>
@@ -162,7 +178,13 @@ const ChatView = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <form className="chat-input-form" onSubmit={sendMessage}>
+      <form className="chat-input-form" onSubmit={sendMessage}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && showParticipants) {
+            setShowParticipants(false);
+          }
+        }}
+      >
         <div className="chat-input-container">
           <button 
             type="button"
@@ -191,15 +213,36 @@ const ChatView = () => {
           {message.length}/200
         </div>
         {showParticipants && (
-          <div className="participants-list">
-            {participants.length === 0 ? (
-              <div className="empty">Пока никого нет</div>
-            ) : participants.map((p) => (
-              <div key={p.playerId} className="participant-item">
-                <img className="avatar" src={p.avatar || '/avatar-placeholder.png'} alt="avatar" />
-                <span className="name">{p.name}</span>
+          <div 
+            className="participants-overlay" 
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setShowParticipants(false);
+            }}
+            role="presentation"
+          >
+            <div className="participants-modal">
+              <div className="modal-header">
+                <h3>Участники ({participants.length})</h3>
+                <button
+                  type="button"
+                  className="close-btn"
+                  onClick={() => setShowParticipants(false)}
+                  aria-label="Закрыть"
+                >
+                  ✕
+                </button>
               </div>
-            ))}
+              <div className="modal-content">
+                {participants.length === 0 ? (
+                  <div className="empty">Пока никого нет</div>
+                ) : participants.map((p) => (
+                  <div key={p.playerId} className="participant-item">
+                    <img className="avatar" src={p.avatar || '/avatar-placeholder.png'} alt="avatar" />
+                    <span className="name">{p.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </form>

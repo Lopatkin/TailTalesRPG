@@ -68,6 +68,18 @@ io.on('connection', (socket) => {
   if (!io.locationParticipants) {
     io.locationParticipants = new Map(); // key: locationId, value: Map(socketId -> {playerId,name,avatar})
   }
+  // Лимитер сообщений: key playerId -> массив таймстемпов
+  if (!io.messageRate) {
+    io.messageRate = new Map();
+  }
+
+  // Простейшая очистка текста
+  const sanitizeText = (text) => {
+    if (typeof text !== 'string') return '';
+    const noTags = text.replace(/<[^>]*>/g, '');
+    const collapsed = noTags.replace(/\s+/g, ' ');
+    return collapsed.trim().slice(0, 500);
+  };
 
   // Присоединение к чату локации
   socket.on('join-location', async (data) => {
@@ -88,13 +100,30 @@ io.on('connection', (socket) => {
   socket.on('send-message', async (data) => {
     try {
       const { locationId, playerId, message, playerName, playerAvatar } = data;
+      // Rate limit: не более 5 сообщений за 10 секунд
+      const WINDOW_MS = 10 * 1000;
+      const MAX_PER_WINDOW = 5;
+      const now = Date.now();
+      const key = playerId || socket.id;
+      const arr = io.messageRate.get(key) || [];
+      const recent = arr.filter(ts => now - ts < WINDOW_MS);
+      if (recent.length >= MAX_PER_WINDOW) {
+        socket.emit('rate-limit', { message: 'Слишком часто. Подождите немного.' });
+        return;
+      }
+      recent.push(now);
+      io.messageRate.set(key, recent);
+
+      // Санитизация текста
+      const clean = sanitizeText(message);
+      if (!clean) return;
       // Сохраняем в БД
       const saved = await Message.create({
         location: locationId,
         player: playerId,
         playerName: playerName || 'Игрок',
         playerAvatar: playerAvatar || '',
-        text: message
+        text: clean
       });
 
       // Рассылаем по комнате локации

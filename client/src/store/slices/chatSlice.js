@@ -34,6 +34,17 @@ const chatSlice = createSlice({
         console.log('Message rejected - wrong location');
       }
     },
+    addMessagesPrepend: (state, action) => {
+      // Добавляем массив сообщений в начало (для пагинации вверх)
+      // Предполагаем, что action.payload — массив сообщений в правильном порядке (старые -> новые)
+      const filtered = action.payload.filter(m => m.locationId === state.currentLocationId);
+      if (filtered.length > 0) {
+        state.messages = [...filtered, ...state.messages];
+        if (state.messages.length > 300) {
+          state.messages = state.messages.slice(-300);
+        }
+      }
+    },
     clearMessages: (state) => {
       state.messages = [];
     },
@@ -58,6 +69,7 @@ const chatSlice = createSlice({
 export const { 
   setCurrentLocation, 
   addMessage, 
+  addMessagesPrepend,
   clearMessages, 
   setLoading, 
   setError 
