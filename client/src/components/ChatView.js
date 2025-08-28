@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
 import { addMessage, setCurrentLocation, clearMessages } from '../store/slices/chatSlice';
@@ -34,6 +34,14 @@ const ChatView = () => {
       avatar: ''
     }));
   };
+
+  // Стабильная функция для закрытия socket
+  const closeSocket = useCallback(() => {
+    if (socket && socket.connected) {
+      socket.disconnect();
+      setSocket(null);
+    }
+  }, [socket]);
   
 
   useEffect(() => {
@@ -47,10 +55,7 @@ const ChatView = () => {
     }
     
     // Если это новая локация, закрываем старый socket
-    if (socket && socket.connected) {
-      socket.disconnect();
-      setSocket(null);
-    }
+    closeSocket();
 
     // Подключаемся к Socket.io
     console.log('Connecting to Socket.io...');
@@ -120,7 +125,7 @@ const ChatView = () => {
     return () => {
       newSocket.close();
     };
-  }, [dispatch, player, locationObject, currentLocation]);
+  }, [dispatch, player, locationObject, currentLocation, closeSocket]);
 
   useEffect(() => {
     // Прокручиваем к последнему сообщению
