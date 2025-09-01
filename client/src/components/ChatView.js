@@ -11,7 +11,6 @@ const ChatView = () => {
   const locations = useSelector(state => state.location.locations);
   const messages = useSelector(state => state.chat.messages);
 
-  // Получаем полный объект локации
   const locationObject = typeof currentLocation === 'string'
     ? locations.find(loc => loc._id === currentLocation)
     : currentLocation;
@@ -35,18 +34,15 @@ const ChatView = () => {
   useEffect(() => { setParticipants(socketParticipants); }, [socketParticipants]);
 
   useEffect(() => {
-    // Прокручиваем к последнему сообщению
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Догрузка истории при прокрутке вверх
   const onMessagesScroll = (e) => {
     const el = e.currentTarget;
     if (el.scrollTop <= 40 && hasMore && !loadingMore && messages.length > 0) {
       const oldest = messages[0];
       const prevHeight = el.scrollHeight;
       loadMore(oldest.timestamp).then(() => {
-        // Сохраняем визуальную позицию после догрузки
         requestAnimationFrame(() => {
           const newHeight = el.scrollHeight;
           el.scrollTop = newHeight - prevHeight;
@@ -96,7 +92,7 @@ const ChatView = () => {
               disabled
             />
             <button type="button" className="send-button" disabled>
-              Отправить
+              ➤
             </button>
           </div>
         </form>
@@ -169,7 +165,7 @@ const ChatView = () => {
             maxLength={200}
           />
           <button type="submit" className="send-button" disabled={!message.trim()}>
-            Отправить
+            ➤
           </button>
         </div>
 
