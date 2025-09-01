@@ -6,12 +6,14 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import LocationView from './components/LocationView';
 import ChatView from './components/ChatView';
-import ChatInput from './components/ChatInput';
+// import ChatInput from './components/ChatInput';
 import WorldMapView from './components/WorldMapView';
 import ProfileView from './components/ProfileView';
 import './App.css';
 import { authenticatePlayer, setCurrentLocation } from './store/slices/playerSlice';
 import { fetchLocations } from './store/slices/locationSlice';
+
+ылдвапдлыоапвждлоавп
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -24,7 +26,7 @@ const AppContent = () => {
       console.log('Fetching locations...');
       dispatch(fetchLocations());
     } else {
-      console.log('Locations loaded:', locations);
+      console.log('Locваations loaded:', locations);
     }
   }, [dispatch, locations.length, locations]);
 
