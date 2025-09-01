@@ -88,13 +88,17 @@ const AppContent = () => {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Navigate to="/chat" replace />} />
-          <Route path="/chat" element={<ChatView />} />
+          <Route path="/chat" element={
+            <div className="chat-page">
+              <ChatView />
+              <ChatInput />
+            </div>
+          } />
           <Route path="/location" element={<LocationView />} />
           <Route path="/map" element={<WorldMapView />} />
           <Route path="/profile" element={<ProfileView />} />
         </Routes>
       </main>
-      <ChatInput />
       <Footer />
     </div>
   );

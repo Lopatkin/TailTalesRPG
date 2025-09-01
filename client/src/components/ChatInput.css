@@ -1,15 +1,9 @@
 .chat-input-fixed {
-  position: fixed;
-  bottom: 60px; /* Высота footer */
-  left: 0;
-  right: 0;
   background: #fff;
   border-top: 1px solid #e9ecef;
   padding: 8px 12px;
-  z-index: 50;
   box-sizing: border-box;
-  max-width: 1200px;
-  margin: 0 auto;
+  flex-shrink: 0; /* Не сжимается */
 }
 
 .chat-input-form {
@@ -174,7 +168,6 @@
 @media (max-width: 768px) {
   .chat-input-fixed {
     padding: 6px 8px;
-    bottom: 60px;
   }
   
   .chat-input-container {

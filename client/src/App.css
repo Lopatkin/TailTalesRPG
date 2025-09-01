@@ -23,7 +23,16 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  padding-bottom: 0; /* Убираем отступ снизу, так как ChatInput фиксированный */
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px); /* Высота экрана минус header и footer */
+  margin: -20px; /* Убираем отступы main-content */
+  padding: 0;
 }
 
 /* Общие стили для кнопок */
