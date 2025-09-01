@@ -1,12 +1,32 @@
 .chat-view {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100vh; /* важно: занимает весь экран */
+  background: #e5e7eb;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 200px);
+  overflow: hidden;
 }
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  margin-bottom: 64px; /* отступ для фиксированного блока ввода */
+}
+
+.chat-input-fixed {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #e9ecef;
+  padding: 8px 12px;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
 
 .auth-message {
   display: flex;
@@ -30,7 +50,6 @@
   font-size: 16px;
   color: #666;
   margin-bottom: 24px;
-  line-height: 1.5;
 }
 
 .test-login-button {
@@ -40,45 +59,16 @@
   border: none;
   border-radius: 8px;
   font-size: 16px;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .test-login-button:hover {
   background: #357abd;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .test-login-button:active {
   transform: translateY(0);
-}
-
-.chat-header {
-  background: linear-gradient(135deg, #4a90e2, #357abd);
-  color: white;
-  padding: 20px 24px;
-  text-align: center;
-}
-
-.chat-header h2 {
-  font-size: 24px;
-  margin-bottom: 8px;
-  font-weight: 700;
-}
-
-.chat-description {
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.chat-messages {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-  background: #e5e7eb; /* серый фон вместо картинки */
 }
 
 .no-messages {
@@ -107,14 +97,27 @@
 
 .message-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  gap: 8px;
 }
 
 .message-header.with-avatar {
-  gap: 8px;
   justify-content: flex-start;
+}
+
+.avatar,
+.avatar-placeholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.avatar-placeholder {
+  background: #4a90e2;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .message-header .avatar {
@@ -159,7 +162,6 @@
   padding: 12px 16px;
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  line-height: 1.4;
   word-wrap: break-word;
 }
 
@@ -174,15 +176,14 @@
 }
 
 .chat-input-form {
-  background: white;
-  padding: 20px;
-  border-top: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-input-container {
   display: flex;
-  gap: 12px;
-  margin-bottom: 8px;
+  gap: 8px;
+  align-items: center;
 }
 
 .participants-button {
@@ -192,31 +193,30 @@
   border-radius: 8px;
   padding: 0 12px;
   font-size: 16px;
+  cursor: pointer;
 }
 
 .chat-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border: 2px solid #e9ecef;
   border-radius: 8px;
   font-size: 14px;
-  transition: border-color 0.2s ease;
 }
 
 .chat-input:focus {
-  outline: none;
   border-color: #4a90e2;
+  outline: none;
 }
 
 .send-button {
   background: #4a90e2;
   color: white;
-  padding: 12px 20px;
+  padding: 10px 14px;
   border: none;
   border-radius: 8px;
-  font-weight: 500;
-  transition: background 0.2s ease;
-  white-space: nowrap;
+  font-size: 18px;
+  cursor: pointer;
 }
 
 .send-button:hover:not(:disabled) {
@@ -228,13 +228,7 @@
   cursor: not-allowed;
 }
 
-.message-counter {
-  text-align: right;
-  font-size: 12px;
-  color: #666;
-}
-
-/* Скроллбар для чата */
+/* Скроллбар */
 .chat-messages::-webkit-scrollbar {
   width: 6px;
 }
@@ -253,67 +247,17 @@
   background: #a8a8a8;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-  .chat-view {
-    height: calc(100vh - 180px);
-  }
-  
-  .auth-message {
-    padding: 30px 16px;
-  }
-  
-  .auth-message h2 {
-    font-size: 24px;
-  }
-  
-  .auth-message p {
-    font-size: 15px;
-  }
-  
-  .test-login-button {
-    padding: 10px 20px;
-    font-size: 15px;
-  }
-  
-  .chat-header {
-    padding: 16px 20px;
-  }
-  
-  .chat-header h2 {
-    font-size: 20px;
-  }
-  
-  .chat-messages {
-    padding: 16px;
-  }
-  
-  .chat-input-form {
-    padding: 16px;
-  }
-  
-  .message {
-    max-width: 90%;
-  }
-  
-  .chat-input-container {
-    flex-direction: column;
-  }
-  
-  .send-button {
-    align-self: flex-end;
-  }
-}
-
+/* Модалка участников */
 .participants-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 1000;
 }
+
 .participants-modal {
   background: #fff;
   border-radius: 12px;
@@ -321,21 +265,23 @@
   max-width: 420px;
   max-height: 70vh;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 }
-.participants-modal .modal-header {
+
+.modal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
   border-bottom: 1px solid #eee;
 }
-.participants-modal .modal-content {
+
+.modal-content {
   padding: 12px 16px;
   overflow-y: auto;
   max-height: 55vh;
 }
-.participants-modal .close-btn {
+
+.close-btn {
   background: none;
   border: none;
   font-size: 20px;
@@ -360,40 +306,21 @@
   color: #333;
 }
 
-@media (max-width: 480px) {
-  .auth-message {
-    padding: 20px 12px;
-  }
-  
-  .auth-message h2 {
-    font-size: 22px;
-  }
-  
-  .auth-message p {
-    font-size: 14px;
-  }
-  
-  .test-login-button {
-    padding: 8px 16px;
-    font-size: 14px;
-  }
-  
-  .chat-header {
-    padding: 12px 16px;
-  }
-  
-  .chat-messages {
-    padding: 12px;
-  }
-  
-  .chat-input-form {
-    padding: 12px;
-  }
-  
-  .message {
-    max-width: 95%;
-  }
+/* Скроллбар */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
 }
 
+.chat-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
 
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
 
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
