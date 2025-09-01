@@ -1,29 +1,31 @@
 .chat-view {
-  position: relative;
   width: 100%;
-  height: 100vh; /* важно: занимает весь экран */
+  height: 100vh;
   background: #e5e7eb;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 .chat-messages {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  margin-bottom: 64px; /* отступ для фиксированного блока ввода */
+  margin-bottom: 80px;
+  /* пространство для фиксированного блока */
 }
 
-.chat-input-fixed {
-  position: absolute;
+/* Вынесенный блок фиксирован на вьюпорте */
+.chat-input-fixed-viewport {
+  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   background: #fff;
   border-top: 1px solid #e9ecef;
   padding: 8px 12px;
-  z-index: 10;
+  z-index: 1000;
   box-sizing: border-box;
 }
 
@@ -204,8 +206,8 @@
 }
 
 .chat-input:focus {
-  border-color: #4a90e2;
   outline: none;
+  border-color: #4a90e2;
 }
 
 .send-button {
