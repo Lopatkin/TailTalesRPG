@@ -6,13 +6,12 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import LocationView from './components/LocationView';
 import ChatView from './components/ChatView';
-// import ChatInput from './components/ChatInput';
+import ChatInput from './components/ChatInput';
 import WorldMapView from './components/WorldMapView';
 import ProfileView from './components/ProfileView';
 import './App.css';
 import { authenticatePlayer, setCurrentLocation } from './store/slices/playerSlice';
 import { fetchLocations } from './store/slices/locationSlice';
-
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -93,7 +92,7 @@ const AppContent = () => {
           <Route path="/chat" element={
             <div className="chat-page">
               <ChatView />
-              {/* <ChatInput /> */}
+              <ChatInput />
             </div>
           } />
           <Route path="/location" element={<LocationView />} />
