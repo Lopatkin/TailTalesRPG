@@ -91,7 +91,7 @@ const AppContent = () => {
           <Route path="/chat" element={
             <div className="chat-page">
               <ChatView />
-              <ChatInput />
+              {/* <ChatInput /> */}
             </div>
           } />
           <Route path="/location" element={<LocationView />} />
