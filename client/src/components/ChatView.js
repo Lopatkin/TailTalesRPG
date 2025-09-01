@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useChatSocket } from '../hooks/useChatSocket';
 import { authenticatePlayer } from '../store/slices/playerSlice';
@@ -15,9 +15,6 @@ const ChatView = () => {
     ? locations.find(loc => loc._id === currentLocation)
     : currentLocation;
 
-  const [message, setMessage] = useState('');
-  const [participants, setParticipants] = useState([]);
-  const [showParticipants, setShowParticipants] = useState(false);
   const messagesEndRef = useRef(null);
 
   const handleTestLogin = () => {
@@ -30,8 +27,7 @@ const ChatView = () => {
     }));
   };
 
-  const { participants: socketParticipants, sendMessage: socketSend, loadMore, loadingMore, hasMore } = useChatSocket(player, locationObject);
-  useEffect(() => { setParticipants(socketParticipants); }, [socketParticipants]);
+  const { loadMore, loadingMore, hasMore } = useChatSocket(player, locationObject);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -51,12 +47,7 @@ const ChatView = () => {
     }
   };
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    if (!message.trim() || !player || !locationObject) return;
-    socketSend(message.trim());
-    setMessage('');
-  };
+
 
   if (!player) {
     return (
