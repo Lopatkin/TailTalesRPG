@@ -6,6 +6,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import LocationView from './components/LocationView';
 import ChatView from './components/ChatView';
+import ChatInput from './components/ChatInput';
 import WorldMapView from './components/WorldMapView';
 import ProfileView from './components/ProfileView';
 import './App.css';
@@ -93,6 +94,7 @@ const AppContent = () => {
           <Route path="/profile" element={<ProfileView />} />
         </Routes>
       </main>
+      <ChatInput />
       <Footer />
     </div>
   );
