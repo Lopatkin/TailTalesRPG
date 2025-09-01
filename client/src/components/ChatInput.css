@@ -1,7 +1,7 @@
 .chat-input-fixed {
   background: #fff;
   border-top: 1px solid #e9ecef;
-  padding: 8px 12px;
+  padding: 8px 12px 8px 12px; /* Добавляем отступ справа */
   box-sizing: border-box;
   flex-shrink: 0; /* Не сжимается */
 }
@@ -15,6 +15,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  padding-right: 4px; /* Небольшой отступ справа */
 }
 
 .participants-button {

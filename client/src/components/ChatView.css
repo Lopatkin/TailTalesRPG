@@ -10,7 +10,7 @@
 
 .chat-messages {
   flex: 1;
-  padding: 20px;
+  padding: 20px 20px 0 20px; /* Убираем отступ снизу */
   overflow-y: auto;
 }
 
