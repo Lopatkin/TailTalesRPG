@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import { addMessage } from '../store/slices/chatSlice';
 import { useChatSocket } from '../hooks/useChatSocket';
 import { authenticatePlayer } from '../store/slices/playerSlice';
 import './ChatView.css';
@@ -11,18 +10,16 @@ const ChatView = () => {
   const currentLocation = useSelector(state => state.player.currentLocation);
   const locations = useSelector(state => state.location.locations);
   const messages = useSelector(state => state.chat.messages);
-  
+
   // Получаем полный объект локации
-  const locationObject = typeof currentLocation === 'string' 
+  const locationObject = typeof currentLocation === 'string'
     ? locations.find(loc => loc._id === currentLocation)
     : currentLocation;
-  
 
   const [message, setMessage] = useState('');
   const [participants, setParticipants] = useState([]);
   const [showParticipants, setShowParticipants] = useState(false);
   const messagesEndRef = useRef(null);
-  // const socketRef = useRef(null);
 
   const handleTestLogin = () => {
     dispatch(authenticatePlayer({
@@ -33,9 +30,6 @@ const ChatView = () => {
       avatar: ''
     }));
   };
-
-
-  
 
   const { participants: socketParticipants, sendMessage: socketSend, loadMore, loadingMore, hasMore } = useChatSocket(player, locationObject);
   useEffect(() => { setParticipants(socketParticipants); }, [socketParticipants]);
@@ -63,15 +57,7 @@ const ChatView = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (!message.trim() || !player || !locationObject) {
-      console.log('sendMessage validation failed:', { 
-        hasMessage: !!message.trim(), 
-        hasPlayer: !!player, 
-        hasLocation: !!locationObject 
-      });
-      return;
-    }
-
+    if (!message.trim() || !player || !locationObject) return;
     socketSend(message.trim());
     setMessage('');
   };
@@ -82,10 +68,7 @@ const ChatView = () => {
         <div className="auth-message">
           <h2>Чат</h2>
           <p>Для доступа к чату необходимо войти в игру</p>
-          <button 
-            onClick={handleTestLogin}
-            className="test-login-button"
-          >
+          <button onClick={handleTestLogin} className="test-login-button">
             Войти как тестовый пользователь
           </button>
         </div>
@@ -96,12 +79,6 @@ const ChatView = () => {
   if (!locationObject) {
     return (
       <div className="chat-view">
-        <div className="chat-header">
-          <h2>Чат</h2>
-          <p className="chat-description">
-            Выберите локацию для начала общения
-          </p>
-        </div>
         <div className="chat-messages">
           <div className="no-messages">
             <p>Перейдите в раздел "Карта" и выберите локацию</p>
@@ -109,11 +86,7 @@ const ChatView = () => {
         </div>
         <form className="chat-input-form">
           <div className="chat-input-container">
-            <button 
-              type="button"
-              className="participants-button"
-              disabled
-            >
+            <button type="button" className="participants-button" disabled>
               👥 0
             </button>
             <input
@@ -122,11 +95,7 @@ const ChatView = () => {
               className="chat-input"
               disabled
             />
-            <button 
-              type="button" 
-              className="send-button"
-              disabled
-            >
+            <button type="button" className="send-button" disabled>
               Отправить
             </button>
           </div>
@@ -137,10 +106,6 @@ const ChatView = () => {
 
   return (
     <div className="chat-view">
-      <div className="chat-header">
-        <h2>{locationObject.name}</h2>
-      </div>
-
       <div className="chat-messages" onScroll={onMessagesScroll}>
         {messages.length === 0 ? (
           <div className="no-messages">
@@ -149,8 +114,8 @@ const ChatView = () => {
           </div>
         ) : (
           messages.map((msg, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`message ${msg.playerId === player._id ? 'own-message' : 'other-message'}`}
             >
               {msg.playerId !== player._id && (
@@ -178,7 +143,9 @@ const ChatView = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <form className="chat-input-form" onSubmit={sendMessage}
+      <form
+        className="chat-input-form"
+        onSubmit={sendMessage}
         onKeyDown={(e) => {
           if (e.key === 'Escape' && showParticipants) {
             setShowParticipants(false);
@@ -186,7 +153,7 @@ const ChatView = () => {
         }}
       >
         <div className="chat-input-container">
-          <button 
+          <button
             type="button"
             className="participants-button"
             onClick={() => setShowParticipants((s) => !s)}
@@ -201,20 +168,14 @@ const ChatView = () => {
             className="chat-input"
             maxLength={200}
           />
-          <button 
-            type="submit" 
-            className="send-button"
-            disabled={!message.trim()}
-          >
+          <button type="submit" className="send-button" disabled={!message.trim()}>
             Отправить
           </button>
         </div>
-        <div className="message-counter">
-          {message.length}/200
-        </div>
+
         {showParticipants && (
-          <div 
-            className="participants-overlay" 
+          <div
+            className="participants-overlay"
             onClick={(e) => {
               if (e.target === e.currentTarget) setShowParticipants(false);
             }}
@@ -251,6 +212,3 @@ const ChatView = () => {
 };
 
 export default ChatView;
-
-
-

@@ -15,7 +15,6 @@ const io = socketIo(server, {
   }
 });
 
-
 // Middleware
 app.use(helmet());
 app.use(cors());
