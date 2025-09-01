@@ -4,17 +4,23 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow: hidden; /* Убираем скроллбары */
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
   color: #333;
   min-height: 100vh;
+  overflow: hidden; /* Убираем скроллбары */
 }
 
 .App {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow: hidden; /* Убираем скроллбары */
 }
 
 .main-content {
@@ -25,6 +31,7 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* Убираем скроллбары */
 }
 
 .chat-page {
@@ -33,6 +40,7 @@ body {
   height: calc(100vh - 120px); /* Высота экрана минус header и footer */
   margin: -20px; /* Убираем отступы main-content */
   padding: 0;
+  overflow: hidden; /* Убираем скроллбары */
 }
 
 /* Общие стили для кнопок */
