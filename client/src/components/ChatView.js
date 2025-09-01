@@ -80,6 +80,24 @@ const ChatView = () => {
             <p>Перейдите в раздел "Карта" и выберите локацию</p>
           </div>
         </div>
+        <div className="chat-input-fixed">
+          <form className="chat-input-form">
+            <div className="chat-input-container">
+              <button type="button" className="participants-button" disabled>
+                👥 0
+              </button>
+              <input
+                type="text"
+                placeholder="Сначала выберите локацию..."
+                className="chat-input"
+                disabled
+              />
+              <button type="button" className="send-button" disabled>
+                ➤
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
@@ -123,13 +141,14 @@ const ChatView = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Вынесенный блок ввода за пределы скроллящегося контейнера */}
-      <div className="chat-input-fixed-viewport">
+      <div className="chat-input-fixed">
         <form
           className="chat-input-form"
           onSubmit={sendMessage}
           onKeyDown={(e) => {
-            if (e.key === 'Escape' && showParticipants) setShowParticipants(false);
+            if (e.key === 'Escape' && showParticipants) {
+              setShowParticipants(false);
+            }
           }}
         >
           <div className="chat-input-container">
