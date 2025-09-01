@@ -13,7 +13,6 @@ import './App.css';
 import { authenticatePlayer, setCurrentLocation } from './store/slices/playerSlice';
 import { fetchLocations } from './store/slices/locationSlice';
 
-ылдвапдлыоапвждлоавп
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -26,7 +25,8 @@ const AppContent = () => {
       console.log('Fetching locations...');
       dispatch(fetchLocations());
     } else {
-      console.log('Locваations loaded:', locations);
+      console.log('Locations loaded:', locations);
+
     }
   }, [dispatch, locations.length, locations]);
 
