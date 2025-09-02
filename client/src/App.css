@@ -19,7 +19,7 @@ body {
 
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: 5px;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
@@ -31,7 +31,7 @@ body {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 160px); /* Высота экрана минус header, footer и отступы */
-  margin: -10px; /* Убираем отрицательные отступы */
+  margin: 0; /* Убираем отрицательные отступы */
   padding: 0;
   overflow: hidden; /* Убираем скроллбары только для страницы чата */
   position: relative; /* Для правильного позиционирования */
