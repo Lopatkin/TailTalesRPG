@@ -30,8 +30,8 @@ body {
 .chat-page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 10px); /* Высота экрана минус header, footer и отступы */
-  margin: 0; /* Убираем отрицательные отступы */
+  height: calc(100vh - 160px); /* Высота экрана минус header, footer и отступы */
+  margin: -10px; /* Убираем отрицательные отступы */
   padding: 0;
   overflow: hidden; /* Убираем скроллбары только для страницы чата */
   position: relative; /* Для правильного позиционирования */
