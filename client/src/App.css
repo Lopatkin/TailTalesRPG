@@ -35,7 +35,7 @@ body {
   padding: 0;
   overflow: hidden; /* Убираем скроллбары только для страницы чата */
   position: relative; /* Для правильного позиционирования */
-  width: calc(100% + 40px); /* Полная ширина экрана */
+  width: 100%; /* Полная ширина экрана */
   box-sizing: border-box;
 }
 
