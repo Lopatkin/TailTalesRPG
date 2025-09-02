@@ -27,6 +27,18 @@ body {
   flex-direction: column;
 }
 
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 160px); /* Высота экрана минус header, footer и отступы */
+  margin: 0; /* Убираем отрицательные отступы */
+  padding: 0;
+  overflow: hidden; /* Убираем скроллбары только для страницы чата */
+  position: relative; /* Для правильного позиционирования */
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* Общие стили для кнопок */
 button {
   cursor: pointer;
