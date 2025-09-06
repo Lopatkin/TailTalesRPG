@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useChatSocket } from '../hooks/useChatSocket';
+import { useSocket } from '../contexts/SocketContext';
 import { authenticatePlayer } from '../store/slices/playerSlice';
 import './ChatView.css';
 
@@ -27,7 +27,14 @@ const ChatView = () => {
     }));
   };
 
-  const { loadMore, loadingMore, hasMore } = useChatSocket(player, locationObject);
+  const { loadMore, loadingMore, hasMore, connectToLocation } = useSocket();
+
+  // Подключаемся к сокету при изменении игрока или локации
+  useEffect(() => {
+    if (player && locationObject) {
+      connectToLocation(player, locationObject);
+    }
+  }, [player, locationObject, connectToLocation]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useChatSocket } from '../hooks/useChatSocket';
+import { useSocket } from '../contexts/SocketContext';
 import './ChatInput.css';
 
 const ChatInput = () => {
@@ -15,7 +15,7 @@ const ChatInput = () => {
   const [message, setMessage] = useState('');
   const [showParticipants, setShowParticipants] = useState(false);
 
-  const { participants, sendMessage: socketSend } = useChatSocket(player, locationObject);
+  const { participants, sendMessage: socketSend } = useSocket();
 
   const sendMessage = (e) => {
     e.preventDefault();
