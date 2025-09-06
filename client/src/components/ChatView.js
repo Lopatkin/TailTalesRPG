@@ -34,7 +34,7 @@ const ChatView = () => {
     if (player && locationObject) {
       connectToLocation(player, locationObject);
     }
-  }, [player, locationObject, connectToLocation]);
+  }, [player, locationObject]); // Убираем connectToLocation из зависимостей
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

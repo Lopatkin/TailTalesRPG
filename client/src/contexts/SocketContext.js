@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { io } from 'socket.io-client';
 import { useDispatch } from 'react-redux';
 import { addMessage, addMessagesPrepend, clearMessages, setCurrentLocation as setChatCurrentLocation } from '../store/slices/chatSlice';
@@ -23,8 +23,16 @@ export const SocketProvider = ({ children }) => {
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
 
-  const connectToLocation = (player, locationObject) => {
+  const connectToLocation = useCallback((player, locationObject) => {
     if (!player || !locationObject || !locationObject._id) return;
+
+    // Проверяем, не подключены ли мы уже к этой локации с этим игроком
+    if (currentPlayer && currentLocation && 
+        currentPlayer._id === player._id && 
+        currentLocation._id === locationObject._id &&
+        socketRef.current && socketRef.current.connected) {
+      return; // Уже подключены к нужной локации
+    }
 
     // Закрываем предыдущее соединение при смене локации/пользователя
     if (socketRef.current && socketRef.current.connected) {
@@ -57,6 +65,11 @@ export const SocketProvider = ({ children }) => {
       setParticipants(list);
     });
 
+    newSocket.on('disconnect', () => {
+      console.log('Socket disconnected');
+      setParticipants([]);
+    });
+
     // Обновляем текущую локацию в слайсе чата и загружаем историю
     (async () => {
       try {
@@ -84,7 +97,7 @@ export const SocketProvider = ({ children }) => {
 
     setCurrentPlayer(player);
     setCurrentLocation(locationObject);
-  };
+  }, [dispatch, currentPlayer, currentLocation]);
 
   const loadMore = async (oldestTimestamp) => {
     if (loadingMore || !hasMore || !currentLocation) return;
@@ -131,6 +144,8 @@ export const SocketProvider = ({ children }) => {
     setParticipants([]);
     setCurrentPlayer(null);
     setCurrentLocation(null);
+    setHasMore(true);
+    setLoadingMore(false);
   };
 
   // Очистка при размонтировании
