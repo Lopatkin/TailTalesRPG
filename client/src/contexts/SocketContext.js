@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useDispatch } from 'react-redux';
-import { addMessage, addMessagesPrepend, setCurrentLocation, clearMessages } from '../store/slices/chatSlice';
+import { addMessage, addMessagesPrepend, clearMessages, setCurrentLocation } from '../store/slices/chatSlice';
 import api, { API_URL } from '../config/axios';
 
 const SocketContext = createContext();
