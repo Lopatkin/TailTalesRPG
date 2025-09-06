@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useDispatch } from 'react-redux';
-import { addMessage, addMessagesPrepend, clearMessages, setCurrentLocation } from '../store/slices/chatSlice';
+import { addMessage, addMessagesPrepend, clearMessages, setCurrentLocation as setChatCurrentLocation } from '../store/slices/chatSlice';
 import api, { API_URL } from '../config/axios';
 
 const SocketContext = createContext();
@@ -60,7 +60,7 @@ export const SocketProvider = ({ children }) => {
     // Обновляем текущую локацию в слайсе чата и загружаем историю
     (async () => {
       try {
-        dispatch(setCurrentLocation(locationObject._id));
+        dispatch(setChatCurrentLocation(locationObject._id));
         dispatch(clearMessages());
         const res = await api.get(`/api/messages/location/${locationObject._id}?limit=100`);
         if (res.data && Array.isArray(res.data)) {
