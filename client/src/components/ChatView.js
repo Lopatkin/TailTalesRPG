@@ -34,7 +34,8 @@ const ChatView = () => {
     if (player && locationObject) {
       connectToLocation(player, locationObject);
     }
-  }, [player, locationObject]); // Убираем connectToLocation из зависимостей
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player, locationObject]); // connectToLocation мемоизирован в контексте
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
