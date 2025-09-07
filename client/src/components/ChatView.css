@@ -73,7 +73,8 @@
 
 .message {
   margin-bottom: 16px;
-  max-width: 80%;
+  max-width: 75%;
+  width: fit-content; /* Ширина по содержимому */
   box-sizing: border-box;
   overflow-wrap: break-word; /* Перенос длинных слов */
 }
