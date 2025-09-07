@@ -180,7 +180,7 @@
 
 .message-time-inside {
   position: static; /* Больше не абсолютное позиционирование */
-  font-size: 8px;
+  font-size: 10px;
   opacity: 0.7;
   white-space: nowrap; /* Не переносить время */
   align-self: flex-end; /* Прижать к нижней линии */
