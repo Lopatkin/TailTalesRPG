@@ -16,7 +16,6 @@
   box-sizing: border-box; /* Правильный расчет размеров */
 }
 
-
 .auth-message {
   display: flex;
   flex-direction: column;
@@ -27,7 +26,6 @@
   text-align: center;
   background: #f8f9fa;
 }
-
 
 .auth-message h2 {
   font-size: 28px;
