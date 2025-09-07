@@ -10,7 +10,7 @@
 
 .chat-messages {
   flex: 1;
-  padding: 20px 20px 0 20px; /* Убираем отступ снизу */
+  padding: 16px 12px 0 12px; /* Меньше отступы слева/справа, без нижнего */
   overflow-y: auto;
   overflow-x: hidden; /* Убираем горизонтальный скролл */
   box-sizing: border-box; /* Правильный расчет размеров */
@@ -72,8 +72,8 @@
 }
 
 .message {
-  margin-bottom: 16px;
-  max-width: 75%;
+  margin-bottom: 14px;
+  max-width: 70%; /* Немного меньше ширина пузыря */
   width: fit-content; /* Ширина по содержимому */
   box-sizing: border-box;
   overflow-wrap: break-word; /* Перенос длинных слов */
@@ -151,7 +151,7 @@
 
 .message-content {
   background: white;
-  padding: 12px 16px;
+  padding: 10px 14px; /* Чуть меньше внутренние отступы */
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   word-wrap: break-word;
