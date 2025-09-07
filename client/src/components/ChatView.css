@@ -151,7 +151,7 @@
 
 .message-content {
   background: white;
-  padding: 10px 14px 14px 14px; /* Чуть больше снизу под время */
+  padding: 10px 14px; /* Симметричные отступы */
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   word-wrap: break-word;
@@ -159,7 +159,9 @@
   overflow-wrap: break-word; /* Дополнительная поддержка переноса */
   max-width: 100%; /* Ограничиваем ширину */
   box-sizing: border-box;
-  position: relative; /* Для позиционирования времени */
+  display: inline-flex; /* Размещаем текст и время в одной строке */
+  align-items: flex-end; /* Выравниваем время по нижней линии текста */
+  gap: 8px; /* Отступ между текстом и временем */
 }
 
 .own-message .message-content {
@@ -177,11 +179,11 @@
 }
 
 .message-time-inside {
-  position: absolute;
-  right: 10px;
-  bottom: 6px;
+  position: static; /* Больше не абсолютное позиционирование */
   font-size: 11px;
   opacity: 0.7;
+  white-space: nowrap; /* Не переносить время */
+  align-self: flex-end; /* Прижать к нижней линии */
 }
 
 .own-message .message-time-inside {
