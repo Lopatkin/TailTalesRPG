@@ -1,8 +1,13 @@
 .chat-input-fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 56px; /* высота footer (~56px) */
   background: #fff;
   border-top: 1px solid #e9ecef;
   padding: 8px 12px;
   box-sizing: border-box;
+  z-index: 200;
   max-width: 100%;
   overflow: hidden;
 }

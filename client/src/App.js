@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './store/store';
 import { SocketProvider } from './contexts/SocketContext';
@@ -18,6 +18,7 @@ const AppContent = () => {
   const dispatch = useDispatch();
   const player = useSelector(state => state.player.data);
   const locations = useSelector(state => state.location.locations);
+  const location = useLocation();
 
   useEffect(() => {
     // Загружаем локации при первом запуске
@@ -93,7 +94,6 @@ const AppContent = () => {
           <Route path="/chat" element={
             <div className="chat-page">
               <ChatView />
-              <ChatInput />
             </div>
           } />
           <Route path="/location" element={<LocationView />} />
@@ -101,6 +101,7 @@ const AppContent = () => {
           <Route path="/profile" element={<ProfileView />} />
         </Routes>
       </main>
+      {location.pathname === '/chat' && <ChatInput />}
       <Footer />
     </div>
   );
