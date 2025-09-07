@@ -112,7 +112,7 @@ const ChatView = () => {
               <div className="message-content">
                 <div className="message-text">{msg.message}</div>
                 <span className="message-time-inside">{new Date(msg.timestamp).toLocaleTimeString()}</span>
-              </div>
+                </div>
             </div>
           ))
         )}
