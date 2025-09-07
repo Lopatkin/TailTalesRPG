@@ -73,7 +73,7 @@
 
 .message {
   margin-bottom: 14px;
-  max-width: 70%; /* Немного меньше ширина пузыря */
+  max-width: 1%; /* Немного меньше ширина пузыря */
   width: fit-content; /* Ширина по содержимому */
   box-sizing: border-box;
   overflow-wrap: break-word; /* Перенос длинных слов */
