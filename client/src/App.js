@@ -94,6 +94,7 @@ const AppContent = () => {
           <Route path="/chat" element={
             <div className="chat-page">
               <ChatView />
+              <ChatInput />
             </div>
           } />
           <Route path="/location" element={<LocationView />} />
@@ -101,7 +102,6 @@ const AppContent = () => {
           <Route path="/profile" element={<ProfileView />} />
         </Routes>
       </main>
-      {location.pathname === '/chat' && <ChatInput />}
       <Footer />
     </div>
   );
