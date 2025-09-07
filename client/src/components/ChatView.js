@@ -107,15 +107,12 @@ const ChatView = () => {
                     </div>
                   )}
                   <span className="player-name">{msg.playerName}</span>
-                  <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
                 </div>
               )}
-              {msg.playerId === player._id && (
-                <div className="message-header own">
-                  <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
-                </div>
-              )}
-              <div className="message-content">{msg.message}</div>
+              <div className="message-content">
+                <div className="message-text">{msg.message}</div>
+                <span className="message-time-inside">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+              </div>
             </div>
           ))
         )}
