@@ -195,6 +195,23 @@
   background: #218838;
 }
 
+.move-button-small {
+  background: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 8px;
+}
+
+.move-button-small:hover {
+  background: #218838;
+}
+
 .current-location {
   color: #28a745;
   font-weight: 500;

@@ -19,6 +19,7 @@ const WorldMapView = () => {
 
   useEffect(() => {
     if (player) {
+      console.log('Fetching locations for player:', player._id);
       dispatch(fetchLocations(player._id));
     }
   }, [dispatch, player]);
@@ -28,6 +29,15 @@ const WorldMapView = () => {
       setSelectedLocation(currentLocationObject);
     }
   }, [currentLocationObject]);
+
+  // Отладочная информация
+  useEffect(() => {
+    console.log('Locations loaded:', locations);
+    console.log('Player:', player);
+    if (player && player.houseLocation) {
+      console.log('Player house location:', player.houseLocation);
+    }
+  }, [locations, player]);
 
   const handleMove = async (targetLocation) => {
     if (!player || !currentLocationObject) return;
@@ -109,13 +119,18 @@ const WorldMapView = () => {
                 conn => conn.location === location._id
               );
             // Персональный дом всегда доступен для владельца
-            const isOwnHouse = location.type === 'house' && player && location.owner === player._id;
+            const isOwnHouse = location.type === 'house' && player && location.owner && location.owner.toString() === player._id.toString();
             const canMove = (isConnected || isOwnHouse) && !isCurrent;
+            
+            // Отладочная информация для дома
+            if (location.type === 'house') {
+              console.log('House location:', location.name, 'Owner:', location.owner, 'Player ID:', player?._id, 'Is own house:', isOwnHouse, 'Can move:', canMove);
+            }
 
             return (
               <div
                 key={location._id}
-                className={`map-location ${isCurrent ? 'current' : ''} ${canMove ? 'connected' : ''} ${!isConnected && !isCurrent ? 'unreachable' : ''}`}
+                className={`map-location ${isCurrent ? 'current' : ''} ${canMove ? 'connected' : ''} ${!canMove && !isCurrent ? 'unreachable' : ''}`}
                 style={{
                   gridColumn: location.coordinates.x + 2,
                   gridRow: location.coordinates.y + 2
@@ -127,6 +142,17 @@ const WorldMapView = () => {
                 </div>
                 <div className="location-name">{location.name}</div>
                 {isCurrent && <div className="current-indicator">📍</div>}
+                {canMove && (
+                  <button
+                    className="move-button-small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMove(location);
+                    }}
+                  >
+                    Перейти
+                  </button>
+                )}
               </div>
             );
           })}
