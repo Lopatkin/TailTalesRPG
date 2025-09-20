@@ -84,16 +84,37 @@ io.on('connection', (socket) => {
   // Присоединение к чату локации
   socket.on('join-location', async (data) => {
     const { locationId, playerId, playerName, playerAvatar } = data;
-    socket.join(`location-${locationId}`);
-    console.log(`Player ${playerId} joined location ${locationId}`);
+    
+    // Проверяем, является ли это персональным домом
+    const location = await Location.findById(locationId);
+    const isPersonalHouse = location && location.type === 'house' && location.owner && location.owner.toString() === playerId;
+    
+    if (isPersonalHouse) {
+      // Для персонального дома создаем уникальную комнату
+      const roomName = `house-${playerId}`;
+      socket.join(roomName);
+      console.log(`Player ${playerId} joined their personal house ${locationId}`);
+      
+      // Сохраняем участника
+      const map = io.locationParticipants.get(roomName) || new Map();
+      map.set(socket.id, { playerId, name: playerName || 'Игрок', avatar: playerAvatar || '' });
+      io.locationParticipants.set(roomName, map);
+      
+      // Оповещаем комнату
+      io.to(roomName).emit('participants-update', Array.from(map.values()));
+    } else {
+      // Обычная локация
+      socket.join(`location-${locationId}`);
+      console.log(`Player ${playerId} joined location ${locationId}`);
 
-    // Сохраняем участника
-    const map = io.locationParticipants.get(locationId) || new Map();
-    map.set(socket.id, { playerId, name: playerName || 'Игрок', avatar: playerAvatar || '' });
-    io.locationParticipants.set(locationId, map);
+      // Сохраняем участника
+      const map = io.locationParticipants.get(locationId) || new Map();
+      map.set(socket.id, { playerId, name: playerName || 'Игрок', avatar: playerAvatar || '' });
+      io.locationParticipants.set(locationId, map);
 
-    // Оповещаем комнату
-    io.to(`location-${locationId}`).emit('participants-update', Array.from(map.values()));
+      // Оповещаем комнату
+      io.to(`location-${locationId}`).emit('participants-update', Array.from(map.values()));
+    }
   });
 
   // Отправка сообщения в чат
@@ -126,8 +147,13 @@ io.on('connection', (socket) => {
         text: clean
       });
 
+      // Определяем комнату для отправки сообщения
+      const location = await Location.findById(locationId);
+      const isPersonalHouse = location && location.type === 'house' && location.owner && location.owner.toString() === playerId;
+      const roomName = isPersonalHouse ? `house-${playerId}` : `location-${locationId}`;
+      
       // Рассылаем по комнате локации
-      io.to(`location-${locationId}`).emit('new-message', {
+      io.to(roomName).emit('new-message', {
         _id: saved._id,
         locationId,
         playerId,

@@ -18,8 +18,10 @@ const WorldMapView = () => {
     : currentLocation;
 
   useEffect(() => {
-    dispatch(fetchLocations());
-  }, [dispatch]);
+    if (player) {
+      dispatch(fetchLocations(player._id));
+    }
+  }, [dispatch, player]);
 
   useEffect(() => {
     if (currentLocationObject) {

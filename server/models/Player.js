@@ -29,6 +29,11 @@ const playerSchema = new mongoose.Schema({
     ref: 'Location',
     default: null
   },
+  houseLocation: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Location',
+    default: null
+  },
   inventory: [{
     item: {
       type: mongoose.Schema.Types.ObjectId,
