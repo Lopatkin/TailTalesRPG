@@ -13,6 +13,7 @@ mongoose.connect(mongoUri, {
   useUnifiedTopology: true
 });
 
+
 const db = mongoose.connection;
 
 const createItems = async () => {
