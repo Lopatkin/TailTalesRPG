@@ -19,16 +19,6 @@ const AppContent = () => {
   const player = useSelector(state => state.player.data);
   const locations = useSelector(state => state.location.locations);
   const location = useLocation();
-<<<<<<< HEAD
-=======
-
-  useEffect(() => {
-    // Загружаем локации при первом запуске
-    if (locations.length === 0) {
-      dispatch(fetchLocations());
-    }
-  }, [dispatch, locations.length, locations]);
->>>>>>> 828c01af92d200df38108a7d47f905449aab6959
 
   useEffect(() => {
     const isTelegramWebApp = typeof window !== 'undefined' && window.Telegram && window.Telegram.WebApp;
