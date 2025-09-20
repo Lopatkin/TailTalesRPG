@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../config/axios';
+import locationsData from '../data/locationsData';
 
-// Асинхронные действия
 export const authenticatePlayer = createAsyncThunk(
   'player/authenticate',
   async (telegramData) => {
@@ -81,8 +81,8 @@ const playerSlice = createSlice({
       .addCase(authenticatePlayer.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
-        // currentLocation может быть ID или объектом, оставляем как есть
-        state.currentLocation = action.payload.currentLocation;
+        const clientLocation = locationsData.find(loc => loc._id === action.payload.currentLocation);
+        state.currentLocation = clientLocation || locationsData.find(loc => loc.type === 'forest') || locationsData[0];
         state.isAuthenticated = true;
       })
       .addCase(authenticatePlayer.rejected, (state, action) => {
@@ -95,13 +95,13 @@ const playerSlice = createSlice({
       .addCase(fetchPlayerData.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
-        state.currentLocation = action.payload.currentLocation;
+        const clientLocation = locationsData.find(loc => loc._id === action.payload.currentLocation);
+        state.currentLocation = clientLocation || locationsData.find(loc => loc.type === 'forest') || locationsData[0];
         state.isAuthenticated = true;
       })
       .addCase(updatePlayerLocation.fulfilled, (state, action) => {
-        // Обновляем currentLocation на новую локацию
-        state.currentLocation = action.payload.newLocation._id;
-        console.log('Player moved to new location:', action.payload.newLocation);
+        state.currentLocation = locationsData.find(loc => loc._id === action.payload.newLocation._id);
+        console.log('Player moved to new location:', state.currentLocation);
       })
       .addCase(performAction.fulfilled, (state, action) => {
         if (state.data) {
@@ -121,6 +121,3 @@ export const {
 } = playerSlice.actions;
 
 export default playerSlice.reducer;
-
-
-

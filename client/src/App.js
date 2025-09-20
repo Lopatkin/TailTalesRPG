@@ -12,7 +12,7 @@ import WorldMapView from './components/WorldMapView';
 import ProfileView from './components/ProfileView';
 import './App.css';
 import { authenticatePlayer, setCurrentLocation } from './store/slices/playerSlice';
-import { fetchLocations } from './store/slices/locationSlice';
+import locationsData from './data/locationsData';
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -21,19 +21,11 @@ const AppContent = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Загружаем локации при первом запуске
-    if (locations.length === 0) {
-      dispatch(fetchLocations());
-    }
-  }, [dispatch, locations.length, locations]);
-
-  useEffect(() => {
     const isTelegramWebApp = typeof window !== 'undefined' && window.Telegram && window.Telegram.WebApp;
 
     if (!player && isTelegramWebApp) {
       try {
         const wa = window.Telegram.WebApp;
-        // Сообщаем Telegram, что WebApp готов
         if (wa && typeof wa.ready === 'function') {
           wa.ready();
         }
@@ -47,16 +39,14 @@ const AppContent = () => {
             lastName: tgUser.last_name || '',
             avatar: tgUser.photo_url || ''
           }));
-          return; // не делаем тестовый логин
+          return;
         }
       } catch (e) {
         // игнорируем и упадём на тестовый вход
       }
     }
 
-    // Если не Telegram WebApp или не удалось получить данные пользователя, делаем тестовый вход
     if (!player) {
-      // Небольшая задержка для корректной инициализации
       setTimeout(() => {
         dispatch(authenticatePlayer({
           telegramId: 'TEST_USER_001',
@@ -69,10 +59,8 @@ const AppContent = () => {
     }
   }, [dispatch, player]);
 
-  // Устанавливаем локацию по умолчанию для нового игрока
   useEffect(() => {
     if (player && !player.currentLocation && locations.length > 0) {
-      // Устанавливаем первую доступную локацию (обычно это "Лес")
       const defaultLocation = locations.find(loc => loc.type === 'forest') || locations[0];
       if (defaultLocation) {
         console.log('Setting default location:', defaultLocation);
@@ -116,6 +104,3 @@ function App() {
 }
 
 export default App;
-
-
-
