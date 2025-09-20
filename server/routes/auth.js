@@ -30,7 +30,7 @@ router.post('/telegram', async (req, res) => {
       }
 
       // Находим свободный дом и привязываем его к игроку
-      const houseLocation = await Location.findOne({ type: 'house', owner: { $exists: false } });
+      const houseLocation = await Location.findOne({ type: 'house', owner: null });
       if (houseLocation) {
         houseLocation.owner = player._id;
         houseLocation.name = `Дом ${firstName}`;

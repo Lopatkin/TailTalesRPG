@@ -81,6 +81,18 @@
   box-shadow: none;
 }
 
+.map-location.house-not-owned {
+  opacity: 0.6;
+  border-color: #ccc;
+  background: #f8f9fa;
+  cursor: default;
+}
+
+.map-location.house-not-owned:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .location-icon {
   font-size: 32px;
   margin-bottom: 8px;

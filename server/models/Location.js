@@ -51,9 +51,7 @@ const locationSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Player',
-    required: function() {
-      return this.type === 'house';
-    }
+    default: null
   }
 });
 

@@ -28,6 +28,7 @@ const WorldMapView = () => {
   }, [currentLocationObject]);
 
 
+
   const handleMove = async (targetLocation) => {
     if (!player || !currentLocationObject) return;
 
@@ -107,15 +108,16 @@ const WorldMapView = () => {
               currentLocationObject.connectedLocations?.some(
                 conn => conn.location === location._id
               );
-            // Персональный дом доступен только для владельца
+            // Дом всегда доступен для владельца, обычные локации доступны если связаны
             const isOwnHouse = location.type === 'house' && player && location.owner && location.owner.toString() === player._id.toString();
             const canMove = (isConnected || isOwnHouse) && !isCurrent;
+            
             
 
             return (
               <div
                 key={location._id}
-                className={`map-location ${isCurrent ? 'current' : ''} ${canMove ? 'connected' : ''} ${!canMove && !isCurrent ? 'unreachable' : ''}`}
+                className={`map-location ${isCurrent ? 'current' : ''} ${canMove ? 'connected' : ''} ${location.type === 'house' && !isOwnHouse ? 'house-not-owned' : ''} ${!canMove && !isCurrent && location.type !== 'house' ? 'unreachable' : ''}`}
                 style={{
                   gridColumn: location.coordinates.x + 2,
                   gridRow: location.coordinates.y + 2
