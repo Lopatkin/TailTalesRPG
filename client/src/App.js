@@ -22,14 +22,10 @@ const AppContent = () => {
 
   useEffect(() => {
     // Загружаем локации при первом запуске
-    if (locations.length === 0 && player) {
-      console.log('Fetching locations...');
-      dispatch(fetchLocations(player._id));
-    } else {
-      console.log('Locations loaded:', locations);
-
+    if (locations.length === 0) {
+      dispatch(fetchLocations());
     }
-  }, [dispatch, locations.length, locations, player]);
+  }, [dispatch, locations.length, locations]);
 
   useEffect(() => {
     const isTelegramWebApp = typeof window !== 'undefined' && window.Telegram && window.Telegram.WebApp;

@@ -3,9 +3,8 @@ import api from '../../config/axios';
 
 export const fetchLocations = createAsyncThunk(
   'location/fetchAll',
-  async (playerId) => {
-    const url = playerId ? `/api/locations?playerId=${playerId}` : '/api/locations';
-    const response = await api.get(url);
+  async () => {
+    const response = await api.get('/api/locations');
     return response.data.locations;
   }
 );

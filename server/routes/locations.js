@@ -7,15 +7,7 @@ const Player = require('../models/Player');
 router.get('/', async (req, res) => {
   try {
     const { playerId } = req.query;
-    let locations = await Location.find({ type: { $ne: 'house' } }).select('-__v');
-    
-    // Если указан playerId, добавляем его персональный дом
-    if (playerId) {
-      const player = await Player.findById(playerId).populate('houseLocation');
-      if (player && player.houseLocation) {
-        locations.push(player.houseLocation);
-      }
-    }
+    let locations = await Location.find().select('-__v');
     
     res.json({ success: true, locations });
   } catch (error) {

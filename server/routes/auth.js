@@ -29,21 +29,18 @@ router.post('/telegram', async (req, res) => {
         player.currentLocation = firstLocation._id;
       }
 
-      // Создаем персональный дом для игрока
-      const houseLocation = new Location({
-        name: `Дом ${firstName}`,
-        description: `Уютный дом игрока ${firstName}. Здесь можно отдохнуть и поговорить с самим собой.`,
-        type: 'house',
-        coordinates: { x: 2, y: 2 }, // Размещаем дом в отдельном месте на карте
-        availableActions: [],
-        backgroundImage: '/images/house.jpg',
-        owner: player._id
-      });
-      await houseLocation.save();
-      
-      // Привязываем дом к игроку
-      player.houseLocation = houseLocation._id;
-      await player.save();
+      // Находим свободный дом и привязываем его к игроку
+      const houseLocation = await Location.findOne({ type: 'house', owner: { $exists: false } });
+      if (houseLocation) {
+        houseLocation.owner = player._id;
+        houseLocation.name = `Дом ${firstName}`;
+        houseLocation.description = `Уютный дом игрока ${firstName}. Здесь можно отдохнуть и поговорить с самим собой.`;
+        await houseLocation.save();
+        
+        // Привязываем дом к игроку
+        player.houseLocation = houseLocation._id;
+        await player.save();
+      }
     } else {
       // Обновим базовые поля, если изменились
       player.username = username;
