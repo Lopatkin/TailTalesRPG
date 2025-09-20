@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../config/axios';
-import locationsData from '../data/locationsData';
+import locationsData from '../../data/locationsData';
 
 export const authenticatePlayer = createAsyncThunk(
   'player/authenticate',

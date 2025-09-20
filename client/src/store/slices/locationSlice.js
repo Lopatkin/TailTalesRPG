@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import locationsData from '../data/locationsData';
+import locationsData from '../../data/locationsData';
 
 const initialState = {
   locations: locationsData,
