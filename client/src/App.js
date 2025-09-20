@@ -12,7 +12,6 @@ import WorldMapView from './components/WorldMapView';
 import ProfileView from './components/ProfileView';
 import './App.css';
 import { authenticatePlayer, setCurrentLocation } from './store/slices/playerSlice';
-import locationsData from './data/locationsData';
 
 const AppContent = () => {
   const dispatch = useDispatch();
