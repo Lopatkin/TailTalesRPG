@@ -1,7 +1,7 @@
 .chat-view {
   position: relative;
   width: 100%;
-  height: 100vh; /* важно: занимает весь экран */
+  flex: 1;
   background: #e5e7eb;
   display: flex;
   flex-direction: column;
@@ -10,23 +10,11 @@
 
 .chat-messages {
   flex: 1;
-  padding: 20px;
+  padding: 16px 12px;
   overflow-y: auto;
-  margin-bottom: 64px; /* отступ для фиксированного блока ввода */
+  overflow-x: hidden; /* Убираем горизонтальный скролл */
+  box-sizing: border-box; /* Правильный расчет размеров */
 }
-
-.chat-input-fixed {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  border-top: 1px solid #e9ecef;
-  padding: 8px 12px;
-  z-index: 10;
-  box-sizing: border-box;
-}
-
 
 .auth-message {
   display: flex;
@@ -83,8 +71,11 @@
 }
 
 .message {
-  margin-bottom: 16px;
-  max-width: 80%;
+  margin-bottom: 10px;
+  max-width: 70%; /* Немного меньше ширина пузыря */
+  width: fit-content; /* Ширина по содержимому */
+  box-sizing: border-box;
+  overflow-wrap: break-word; /* Перенос длинных слов */
 }
 
 .message.own-message {
@@ -159,10 +150,17 @@
 
 .message-content {
   background: white;
-  padding: 12px 16px;
-  border-radius: 12px;
+  padding: 8px 10px; /* Более компактные внутренние отступы */
+  border-radius: 12px; /* Чуть меньше скругление */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   word-wrap: break-word;
+  word-break: break-word; /* Принудительный перенос длинных слов */
+  overflow-wrap: break-word; /* Дополнительная поддержка переноса */
+  max-width: 100%; /* Ограничиваем ширину */
+  box-sizing: border-box;
+  display: inline-flex; /* Размещаем текст и время в одной строке */
+  align-items: flex-end; /* Выравниваем время по нижней линии текста */
+  gap: 8px; /* Отступ между текстом и временем */
 }
 
 .own-message .message-content {
@@ -175,136 +173,28 @@
   color: #333;
 }
 
-.chat-input-form {
-  display: flex;
-  flex-direction: column;
+.message-text {
+  white-space: pre-wrap;
 }
 
-.chat-input-container {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+.message-time-inside {
+  position: static; /* Больше не абсолютное позиционирование */
+  font-size: 10px;
+  opacity: 0.7;
+  white-space: nowrap; /* Не переносить время */
+  align-self: flex-end; /* Прижать к нижней линии */
+  margin-top: 2px; /* Чуть ниже относительно текста */
 }
 
-.participants-button {
-  background: #333;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0 12px;
-  font-size: 16px;
-  cursor: pointer;
+.own-message .message-time-inside {
+  color: rgba(255, 255, 255, 0.85);
 }
 
-.chat-input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 14px;
+.other-message .message-time-inside {
+  color: #666;
 }
 
-.chat-input:focus {
-  border-color: #4a90e2;
-  outline: none;
-}
 
-.send-button {
-  background: #4a90e2;
-  color: white;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 8px;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.send-button:hover:not(:disabled) {
-  background: #357abd;
-}
-
-.send-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-/* Скроллбар */
-.chat-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Модалка участников */
-.participants-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.participants-modal {
-  background: #fff;
-  border-radius: 12px;
-  width: 90vw;
-  max-width: 420px;
-  max-height: 70vh;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid #eee;
-}
-
-.modal-content {
-  padding: 12px 16px;
-  overflow-y: auto;
-  max-height: 55vh;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.participant-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 4px;
-}
-
-.participant-item .avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-}
-
-.participant-item .name {
-  font-size: 14px;
-  color: #333;
-}
 
 /* Скроллбар */
 .chat-messages::-webkit-scrollbar {

@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useChatSocket } from '../hooks/useChatSocket';
+import { useSocket } from '../contexts/SocketContext';
 import { authenticatePlayer } from '../store/slices/playerSlice';
 import './ChatView.css';
 
@@ -15,9 +15,6 @@ const ChatView = () => {
     ? locations.find(loc => loc._id === currentLocation)
     : currentLocation;
 
-  const [message, setMessage] = useState('');
-  const [participants, setParticipants] = useState([]);
-  const [showParticipants, setShowParticipants] = useState(false);
   const messagesEndRef = useRef(null);
 
   const handleTestLogin = () => {
@@ -30,11 +27,18 @@ const ChatView = () => {
     }));
   };
 
-  const { participants: socketParticipants, sendMessage: socketSend, loadMore, loadingMore, hasMore } = useChatSocket(player, locationObject);
-  useEffect(() => { setParticipants(socketParticipants); }, [socketParticipants]);
+  const { loadMore, loadingMore, hasMore, connectToLocation } = useSocket();
+
+  // Подключаемся к сокету при изменении игрока или локации
+  useEffect(() => {
+    if (player && locationObject) {
+      connectToLocation(player, locationObject);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player, locationObject]); // connectToLocation мемоизирован в контексте
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
   }, [messages]);
 
   const onMessagesScroll = (e) => {
@@ -51,12 +55,7 @@ const ChatView = () => {
     }
   };
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    if (!message.trim() || !player || !locationObject) return;
-    socketSend(message.trim());
-    setMessage('');
-  };
+
 
   if (!player) {
     return (
@@ -79,24 +78,6 @@ const ChatView = () => {
           <div className="no-messages">
             <p>Перейдите в раздел "Карта" и выберите локацию</p>
           </div>
-        </div>
-        <div className="chat-input-fixed">
-          <form className="chat-input-form">
-            <div className="chat-input-container">
-              <button type="button" className="participants-button" disabled>
-                👥 0
-              </button>
-              <input
-                type="text"
-                placeholder="Сначала выберите локацию..."
-                className="chat-input"
-                disabled
-              />
-              <button type="button" className="send-button" disabled>
-                ➤
-              </button>
-            </div>
-          </form>
         </div>
       </div>
     );
@@ -126,86 +107,16 @@ const ChatView = () => {
                     </div>
                   )}
                   <span className="player-name">{msg.playerName}</span>
-                  <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
                 </div>
               )}
-              {msg.playerId === player._id && (
-                <div className="message-header own">
-                  <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+              <div className="message-content">
+                <div className="message-text">{msg.message}</div>
+                <span className="message-time-inside">{new Date(msg.timestamp).toLocaleTimeString()}</span>
                 </div>
-              )}
-              <div className="message-content">{msg.message}</div>
             </div>
           ))
         )}
         <div ref={messagesEndRef} />
-      </div>
-
-      <div className="chat-input-fixed">
-        <form
-          className="chat-input-form"
-          onSubmit={sendMessage}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape' && showParticipants) {
-              setShowParticipants(false);
-            }
-          }}
-        >
-          <div className="chat-input-container">
-            <button
-              type="button"
-              className="participants-button"
-              onClick={() => setShowParticipants((s) => !s)}
-            >
-              👥 {participants.length || 0}
-            </button>
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Введите сообщение..."
-              className="chat-input"
-              maxLength={200}
-            />
-            <button type="submit" className="send-button" disabled={!message.trim()}>
-              ➤
-            </button>
-          </div>
-
-          {showParticipants && (
-            <div
-              className="participants-overlay"
-              onClick={(e) => {
-                if (e.target === e.currentTarget) setShowParticipants(false);
-              }}
-              role="presentation"
-            >
-              <div className="participants-modal">
-                <div className="modal-header">
-                  <h3>Участники ({participants.length})</h3>
-                  <button
-                    type="button"
-                    className="close-btn"
-                    onClick={() => setShowParticipants(false)}
-                    aria-label="Закрыть"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="modal-content">
-                  {participants.length === 0 ? (
-                    <div className="empty">Пока никого нет</div>
-                  ) : participants.map((p) => (
-                    <div key={p.playerId} className="participant-item">
-                      <img className="avatar" src={p.avatar || '/avatar-placeholder.png'} alt="avatar" />
-                      <span className="name">{p.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </form>
       </div>
     </div>
   );

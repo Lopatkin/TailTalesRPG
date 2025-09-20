@@ -1,0 +1,13 @@
+[1mdiff --git a/client/src/App.css b/client/src/App.css[m
+[1mindex 8a8cc83..5e60709 100644[m
+[1m--- a/client/src/App.css[m
+[1m+++ b/client/src/App.css[m
+[36m@@ -35,7 +35,7 @@[m [mbody {[m
+   padding: 0;[m
+   overflow: hidden; /* Убираем скроллбары только для страницы чата */[m
+   position: relative; /* Для правильного позиционирования */[m
+[31m-  width: calc(100% + 40px); /* Полная ширина экрана */[m
+[32m+[m[32m  width: 100%; /* Полная ширина экрана */[m
+   box-sizing: border-box;[m
+ }[m
+ [m

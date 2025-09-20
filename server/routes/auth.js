@@ -29,7 +29,18 @@ router.post('/telegram', async (req, res) => {
         player.currentLocation = firstLocation._id;
       }
 
-      await player.save();
+      // Находим свободный дом и привязываем его к игроку
+      const houseLocation = await Location.findOne({ type: 'house', owner: null });
+      if (houseLocation) {
+        houseLocation.owner = player._id;
+        houseLocation.name = `Дом ${firstName}`;
+        houseLocation.description = `Уютный дом игрока ${firstName}. Здесь можно отдохнуть и поговорить с самим собой.`;
+        await houseLocation.save();
+        
+        // Привязываем дом к игроку
+        player.houseLocation = houseLocation._id;
+        await player.save();
+      }
     } else {
       // Обновим базовые поля, если изменились
       player.username = username;
@@ -56,6 +67,8 @@ router.get('/me', async (req, res) => {
 
     const player = await Player.findOne({ telegramId }).populate({
       path: 'currentLocation',
+    }).populate({
+      path: 'houseLocation',
     });
 
     if (!player) {

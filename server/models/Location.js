@@ -12,7 +12,7 @@ const locationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['forest', 'village', 'swamp', 'cave'],
+    enum: ['forest', 'village', 'swamp', 'cave', 'house'],
     required: true
   },
   coordinates: {
@@ -47,6 +47,11 @@ const locationSchema = new mongoose.Schema({
   isUnlocked: {
     type: Boolean,
     default: true
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Player',
+    default: null
   }
 });
 

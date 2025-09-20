@@ -27,6 +27,8 @@ const WorldMapView = () => {
     }
   }, [currentLocationObject]);
 
+
+
   const handleMove = async (targetLocation) => {
     if (!player || !currentLocationObject) return;
 
@@ -57,6 +59,7 @@ const WorldMapView = () => {
       case 'village': return '🏘️';
       case 'swamp': return '🌿';
       case 'cave': return '🕳️';
+      case 'house': return '🏠';
       default: return '📍';
     }
   };
@@ -105,12 +108,16 @@ const WorldMapView = () => {
               currentLocationObject.connectedLocations?.some(
                 conn => conn.location === location._id
               );
-            const canMove = isConnected && !isCurrent;
+            // Дом всегда доступен для владельца, обычные локации доступны если связаны
+            const isOwnHouse = location.type === 'house' && player && location.owner && location.owner.toString() === player._id.toString();
+            const canMove = (isConnected || isOwnHouse) && !isCurrent;
+            
+            
 
             return (
               <div
                 key={location._id}
-                className={`map-location ${isCurrent ? 'current' : ''} ${canMove ? 'connected' : ''} ${!isConnected && !isCurrent ? 'unreachable' : ''}`}
+                className={`map-location ${isCurrent ? 'current' : ''} ${canMove ? 'connected' : ''} ${location.type === 'house' && !isOwnHouse ? 'house-not-owned' : ''} ${!canMove && !isCurrent && location.type !== 'house' ? 'unreachable' : ''}`}
                 style={{
                   gridColumn: location.coordinates.x + 2,
                   gridRow: location.coordinates.y + 2
@@ -122,6 +129,17 @@ const WorldMapView = () => {
                 </div>
                 <div className="location-name">{location.name}</div>
                 {isCurrent && <div className="current-indicator">📍</div>}
+                {canMove && (
+                  <button
+                    className="move-button-small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMove(location);
+                    }}
+                  >
+                    Перейти
+                  </button>
+                )}
               </div>
             );
           })}
@@ -176,6 +194,46 @@ const WorldMapView = () => {
                 </div>
               ) : (
                 <p>Нет связанных локаций</p>
+              )}
+              
+              {/* Показываем персональный дом в связанных локациях, если он не текущая локация */}
+              {selectedLocation.connectedLocations && selectedLocation.connectedLocations.some(conn => {
+                const targetLocation = locations.find(l => l._id === conn.location);
+                return targetLocation && targetLocation.type === 'house' && player && targetLocation.owner && targetLocation.owner.toString() === player._id.toString();
+              }) && (
+                <div className="connections-list">
+                  {selectedLocation.connectedLocations.map((connection, index) => {
+                    const targetLocation = locations.find(l => l._id === connection.location);
+                    if (!targetLocation || targetLocation.type !== 'house' || !player || !targetLocation.owner || targetLocation.owner.toString() !== player._id.toString()) {
+                      return null;
+                    }
+
+                    const isCurrent = currentLocationObject && currentLocationObject._id === targetLocation._id;
+                    const canMove = currentLocationObject && currentLocationObject._id === selectedLocation._id;
+
+                    return (
+                      <div key={index} className="connection-item">
+                        <div className="connection-direction">
+                          {getDirectionArrow(connection.direction)} {connection.direction}
+                        </div>
+                        <div className="connection-location">
+                          {targetLocation.name}
+                        </div>
+                        {canMove && !isCurrent && (
+                          <button
+                            className="move-button"
+                            onClick={() => handleMove(targetLocation)}
+                          >
+                            Перейти
+                          </button>
+                        )}
+                        {isCurrent && (
+                          <span className="current-location">Текущая локация</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </div>
 

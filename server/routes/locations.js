@@ -6,7 +6,9 @@ const Player = require('../models/Player');
 // Получение всех локаций
 router.get('/', async (req, res) => {
   try {
-    const locations = await Location.find().select('-__v');
+    const { playerId } = req.query;
+    let locations = await Location.find().select('-__v');
+    
     res.json({ success: true, locations });
   } catch (error) {
     console.error('Get locations error:', error);
@@ -51,11 +53,13 @@ router.post('/:id/move', async (req, res) => {
     // Проверяем, связана ли новая локация с текущей
     const currentLocation = await Location.findById(player.currentLocation);
     if (currentLocation) {
+      // Исключение для персонального дома - игрок всегда может попасть в свой дом
+      const isOwnHouse = location.type === 'house' && location.owner && location.owner.toString() === playerId;
       const isConnected = currentLocation.connectedLocations.some(
         conn => conn.location.toString() === locationId
       );
       
-      if (!isConnected) {
+      if (!isConnected && !isOwnHouse) {
         return res.status(400).json({ error: 'Location not accessible from current position' });
       }
     }

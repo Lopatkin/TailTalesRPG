@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './store/store';
+import { SocketProvider } from './contexts/SocketContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LocationView from './components/LocationView';
 import ChatView from './components/ChatView';
+import ChatInput from './components/ChatInput';
 import WorldMapView from './components/WorldMapView';
 import ProfileView from './components/ProfileView';
 import './App.css';
@@ -16,14 +18,12 @@ const AppContent = () => {
   const dispatch = useDispatch();
   const player = useSelector(state => state.player.data);
   const locations = useSelector(state => state.location.locations);
+  const location = useLocation();
 
   useEffect(() => {
     // Загружаем локации при первом запуске
     if (locations.length === 0) {
-      console.log('Fetching locations...');
       dispatch(fetchLocations());
-    } else {
-      console.log('Locations loaded:', locations);
     }
   }, [dispatch, locations.length, locations]);
 
@@ -87,12 +87,17 @@ const AppContent = () => {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Navigate to="/chat" replace />} />
-          <Route path="/chat" element={<ChatView />} />
+          <Route path="/chat" element={
+            <div className="chat-page">
+              <ChatView />
+            </div>
+          } />
           <Route path="/location" element={<LocationView />} />
           <Route path="/map" element={<WorldMapView />} />
           <Route path="/profile" element={<ProfileView />} />
         </Routes>
       </main>
+      {location.pathname === '/chat' && <ChatInput />}
       <Footer />
     </div>
   );
@@ -101,9 +106,11 @@ const AppContent = () => {
 function App() {
   return (
     <Provider store={store}>
-      <Router>
-        <AppContent />
-      </Router>
+      <SocketProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </SocketProvider>
     </Provider>
   );
 }

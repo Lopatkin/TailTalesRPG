@@ -95,6 +95,14 @@ const createLocations = async (items) => {
         { name: 'Найти камень', description: 'Поискать подходящие камни в пещере', experienceReward: 6, itemReward: stone?._id, requiredLevel: 1 }
       ],
       backgroundImage: '/images/cave.jpg'
+    },
+    {
+      name: 'Дом',
+      description: 'Уютный дом игрока. Здесь можно отдохнуть и поговорить с самим собой.',
+      type: 'house',
+      coordinates: { x: 2, y: 0 }, // Справа от Деревни
+      availableActions: [],
+      backgroundImage: '/images/house.jpg'
     }
   ];
 
@@ -114,6 +122,7 @@ const createLocations = async (items) => {
   const village = createdLocations.find(l => l.name === 'Деревня');
   const swamp = createdLocations.find(l => l.name === 'Болото');
   const cave = createdLocations.find(l => l.name === 'Пещера');
+  const house = createdLocations.find(l => l.name === 'Дом');
 
   if (forest && village && swamp && cave) {
     forest.connectedLocations = [
@@ -131,6 +140,15 @@ const createLocations = async (items) => {
     await village.save();
     await swamp.save();
     await cave.save();
+  }
+
+  // Добавляем связь между Деревней и Домом
+  if (village && house) {
+    village.connectedLocations.push({ location: house._id, direction: 'east' });
+    house.connectedLocations = [{ location: village._id, direction: 'west' }];
+    
+    await village.save();
+    await house.save();
   }
 
   return createdLocations;

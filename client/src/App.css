@@ -19,10 +19,24 @@ body {
 
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: 20px 12px; /* Уменьшаем боковые отступы с 20px до 12px */
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Заполняем пространство между шапкой и подвалом */
+  overflow: hidden; /* Скролл внутри области сообщений */
+  position: relative;
+  margin: -20px -12px -20px -12px; /* Убираем отступы main-content сверху/снизу/слева/справа */
+  width: calc(100% + 24px); /* Компенсируем боковые отступы */
+  padding-bottom: 30px; /* Отступ для фиксированного инпута */
+  box-sizing: border-box;
 }
 
 /* Общие стили для кнопок */
