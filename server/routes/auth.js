@@ -34,7 +34,7 @@ router.post('/telegram', async (req, res) => {
         name: `Дом ${firstName}`,
         description: `Уютный дом игрока ${firstName}. Здесь можно отдохнуть и поговорить с самим собой.`,
         type: 'house',
-        coordinates: { x: 0, y: 0 }, // Координаты не важны для дома
+        coordinates: { x: 2, y: 2 }, // Размещаем дом в отдельном месте на карте
         availableActions: [],
         backgroundImage: '/images/house.jpg',
         owner: player._id

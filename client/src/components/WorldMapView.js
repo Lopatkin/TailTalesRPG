@@ -59,6 +59,7 @@ const WorldMapView = () => {
       case 'village': return '🏘️';
       case 'swamp': return '🌿';
       case 'cave': return '🕳️';
+      case 'house': return '🏠';
       default: return '📍';
     }
   };
@@ -107,7 +108,9 @@ const WorldMapView = () => {
               currentLocationObject.connectedLocations?.some(
                 conn => conn.location === location._id
               );
-            const canMove = isConnected && !isCurrent;
+            // Персональный дом всегда доступен для владельца
+            const isOwnHouse = location.type === 'house' && player && location.owner === player._id;
+            const canMove = (isConnected || isOwnHouse) && !isCurrent;
 
             return (
               <div
@@ -178,6 +181,26 @@ const WorldMapView = () => {
                 </div>
               ) : (
                 <p>Нет связанных локаций</p>
+              )}
+              
+              {/* Показываем персональный дом, если он не текущая локация */}
+              {player && player.houseLocation && selectedLocation._id !== player.houseLocation._id && (
+                <div className="connections-list">
+                  <div className="connection-item">
+                    <div className="connection-direction">
+                      🏠 Дом
+                    </div>
+                    <div className="connection-location">
+                      {player.houseLocation.name}
+                    </div>
+                    <button
+                      className="move-button"
+                      onClick={() => handleMove(player.houseLocation)}
+                    >
+                      Перейти
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
 
