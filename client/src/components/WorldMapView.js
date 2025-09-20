@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchLocations } from '../store/slices/locationSlice';
 import { updatePlayerLocation } from '../store/slices/playerSlice';
 import './WorldMapView.css';
 
@@ -12,22 +11,15 @@ const WorldMapView = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [moveResult, setMoveResult] = useState(null);
   
-  // Получаем полный объект текущей локации
   const currentLocationObject = typeof currentLocation === 'string' 
     ? locations.find(loc => loc._id === currentLocation)
     : currentLocation;
-
-  useEffect(() => {
-    dispatch(fetchLocations());
-  }, [dispatch]);
 
   useEffect(() => {
     if (currentLocationObject) {
       setSelectedLocation(currentLocationObject);
     }
   }, [currentLocationObject]);
-
-
 
   const handleMove = async (targetLocation) => {
     if (!player || !currentLocationObject) return;
@@ -85,14 +77,6 @@ const WorldMapView = () => {
     );
   }
 
-  if (locations.length === 0) {
-    return (
-      <div className="world-map-view">
-        <div className="loading">Загрузка карты мира...</div>
-      </div>
-    );
-  }
-
   return (
     <div className="world-map-view">
       <div className="map-header">
@@ -108,11 +92,8 @@ const WorldMapView = () => {
               currentLocationObject.connectedLocations?.some(
                 conn => conn.location === location._id
               );
-            // Дом всегда доступен для владельца, обычные локации доступны если связаны
             const isOwnHouse = location.type === 'house' && player && location.owner && location.owner.toString() === player._id.toString();
             const canMove = (isConnected || isOwnHouse) && !isCurrent;
-            
-            
 
             return (
               <div
@@ -196,7 +177,6 @@ const WorldMapView = () => {
                 <p>Нет связанных локаций</p>
               )}
               
-              {/* Показываем персональный дом в связанных локациях, если он не текущая локация */}
               {selectedLocation.connectedLocations && selectedLocation.connectedLocations.some(conn => {
                 const targetLocation = locations.find(l => l._id === conn.location);
                 return targetLocation && targetLocation.type === 'house' && player && targetLocation.owner && targetLocation.owner.toString() === player._id.toString();
@@ -257,6 +237,3 @@ const WorldMapView = () => {
 };
 
 export default WorldMapView;
-
-
-
