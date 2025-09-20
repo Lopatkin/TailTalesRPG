@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { performAction, authenticatePlayer } from '../store/slices/playerSlice';
-import { fetchLocationById } from '../store/slices/locationSlice';
 import { addItem } from '../store/slices/inventorySlice';
 import './LocationView.css';
 
@@ -11,12 +10,6 @@ const LocationView = () => {
   const currentLocation = useSelector(state => state.player.currentLocation);
   const [selectedTab, setSelectedTab] = useState('location');
   const [actionResult, setActionResult] = useState(null);
-
-  useEffect(() => {
-    if (player && player.currentLocation) {
-      dispatch(fetchLocationById(player.currentLocation));
-    }
-  }, [dispatch, player]);
 
   const handleAction = async (actionName) => {
     if (!player || !currentLocation) return;
@@ -43,7 +36,6 @@ const LocationView = () => {
         itemGained: result.itemGained
       });
 
-      // Очищаем результат через 3 секунды
       setTimeout(() => setActionResult(null), 3000);
     } catch (error) {
       setActionResult({
@@ -201,6 +193,3 @@ const LocationView = () => {
 };
 
 export default LocationView;
-
-
-
